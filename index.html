@@ -2127,14 +2127,27 @@ function title(){applyHand();state='title';$('hud').classList.add('hide');P=null
   $('b-camp').onclick=camp;$('b-how').onclick=how;$('b-reset').onclick=()=>resetScreen(0);$('b-io').onclick=ioScreen;$('b-hand').onclick=()=>{save.opt=save.opt||{};save.opt.left=!save.opt.left;applyHand();persist();title();};}
 function applyHand(){document.getElementById('ui').classList.toggle('lefty',!!(save.opt&&save.opt.left));}
 // ---- 記録の書き出し・読み込み(端末どうしで記録を移す) ----
-const encSave=()=>{const j=JSON.stringify(save),b=new TextEncoder().encode(j);let s='';for(const c of b)s+=String.fromCharCode(c);return 'RR1:'+btoa(s);};
-const decSave=t=>{t=(t||'').trim().replace(/\s+/g,'');if(!t.startsWith('RR1:'))throw 0;const bin=atob(t.slice(4)),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);const o=JSON.parse(new TextDecoder().decode(u));if(!o||!o.stash||!o.eq)throw 0;return o;};
-function ioScreen(){const code=encSave();scr(`<h2>記録を移す</h2><p class="cen small">この文字列を、もう一方で「読み込む」に貼り付ける</p>
-  <textarea id="io-out" class="io" readonly>${code}</textarea><button class="btn" id="b-copy" type="button">書き出した文字列をコピー</button>
-  <h3>読み込む</h3><textarea id="io-in" class="io" placeholder="RR1: から始まる文字列を貼り付け"></textarea><button class="btn ghost" id="b-load" type="button">読み込む（今の記録は上書きされる）</button>
+// 書き出し:JSON → (縮められるなら deflate で縮めて) → base64。末尾に検査用の数字を付けて、途中で切れたら分かるようにする
+const b64e=u=>{let s='';for(let i=0;i<u.length;i+=8192)s+=String.fromCharCode.apply(null,u.subarray(i,i+8192));return btoa(s);};
+const b64d=t=>{const bin=atob(t),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return u;};
+const ck=t=>{let h=0;for(let i=0;i<t.length;i++)h=(h*31+t.charCodeAt(i))>>>0;return h.toString(36);};
+async function pipeBytes(u,stream){const s=new Blob([u]).stream().pipeThrough(stream);return new Uint8Array(await new Response(s).arrayBuffer());}
+async function encSave(){const raw=new TextEncoder().encode(JSON.stringify(save));let body,tag='RR1';
+  try{if(typeof CompressionStream!=='undefined'){body=b64e(await pipeBytes(raw,new CompressionStream('deflate-raw')));tag='RR2';}}catch(e){}
+  if(!body)body=b64e(raw);return tag+':'+body+'.'+ck(body);}
+async function decSave(t){t=(t||'').replace(/[\s​]/g,'');const m=t.match(/(RR[12]):([A-Za-z0-9+/=]+)(?:\.([a-z0-9]+))?/);if(!m)throw {why:'「RR」から始まる文字列が見つからない'};
+  const [,tag,body,sum]=m;if(sum&&ck(body)!==sum)throw {why:'途中で切れている（'+body.length+'文字）。全部をコピーし直して'};if(!sum&&tag==='RR2')throw {why:'最後まで貼り付けられていない（'+body.length+'文字）'};
+  let u=b64d(body);if(tag==='RR2'){if(typeof DecompressionStream==='undefined')throw {why:'この端末では読み込めない形式'};u=await pipeBytes(u,new DecompressionStream('deflate-raw'));}
+  let o;try{o=JSON.parse(new TextDecoder().decode(u));}catch(e){throw {why:'途中で切れている（'+body.length+'文字）。全部をコピーし直して'};}if(!o||!o.stash||!o.eq)throw {why:'記録の中身が足りない'};return o;}
+async function ioScreen(){const code=await encSave();scr(`<h2>記録を移す</h2><p class="cen small">この文字列を、もう一方で「読み込む」に貼り付ける（${code.length}文字・末尾 ${code.slice(-6)}）</p>
+  <textarea id="io-out" class="io">${code}</textarea><button class="btn" id="b-copy" type="button">書き出した文字列をコピー</button>
+  <h3>読み込む</h3><textarea id="io-in" class="io" placeholder="RR から始まる文字列を貼り付け"></textarea><button class="btn ghost" id="b-load" type="button">読み込む（今の記録は上書きされる）</button>
   <p class="cen small" id="io-msg"></p><button class="btn ghost" id="b-back" type="button">戻る</button>`,true);
-  $('b-copy').onclick=async()=>{try{await navigator.clipboard.writeText(code);$('io-msg').textContent='コピーした';}catch(e){const t=$('io-out');t.focus();t.select();$('io-msg').textContent='選んだので、長押しでコピーして';}};
-  $('b-load').onclick=()=>{try{const o=decSave($('io-in').value);save=Object.assign(freshSave(),o);save.t=Date.now();save.resetAt=Math.max(save.resetAt||0,Date.now()-1);fixSave();migrateSave();persist();applyHand();$('io-msg').textContent='読み込んだ';setTimeout(title,600);}catch(e){$('io-msg').textContent='読み込めなかった。文字列を確かめて';}};
+  $('b-copy').onclick=async()=>{const t=$('io-out');let ok=false;try{await navigator.clipboard.writeText(code);ok=true;}catch(e){}
+    if(!ok){try{t.focus();t.setSelectionRange(0,code.length);ok=document.execCommand('copy');}catch(e){}}
+    $('io-msg').textContent=ok?'コピーした（'+code.length+'文字）':'コピーできなかった。上の枠を長押しして「すべてを選択」→「コピー」';};
+  $('b-load').onclick=async()=>{try{const o=await decSave($('io-in').value);save=Object.assign(freshSave(),o);save.t=Date.now();save.resetAt=Math.max(save.resetAt||0,Date.now()-1);fixSave();migrateSave();persist();applyHand();$('io-msg').textContent='読み込んだ';setTimeout(title,600);}
+    catch(e){$('io-msg').textContent='読み込めなかった：'+((e&&e.why)||'文字列が壊れている');}};
   $('b-back').onclick=title;}
 function resetScreen(step){scr(`<h2>記録を消す</h2><p class="cen">倉庫、装備、古銭、レベル、仕事、証。<br>すべての記録を消して、最初からやり直す。<br>claude.ai 側の記録も消える。</p>
   ${step?'<p class="cen" style="color:#ff9a8a">本当に消す？ 元には戻せない。</p>':''}
