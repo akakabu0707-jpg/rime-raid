@@ -4823,7 +4823,11 @@ function genFloor(d,S){const W=FW_,H=FH_,N=W*H;S=S||{};
   if(d>=2){const els=Math.min(en.length,(rnd2()<.8?1:0)+(d>=3&&rnd2()<.7?1:0)+(d>=6?1:0));for(let i=0;i<els;i++){const e=en[(rnd2()*en.length)|0];if(!(typeof EDEF!=='undefined'&&EDEF[e[0]]&&EDEF[e[0]].mini))e[3]=1;}}
   {const sn=new Uint8Array(N),q2=[start.cy*W+start.cx];sn[q2[0]]=1;while(q2.length){const k=q2.pop();for(const o of [1,-1,W,-W]){const kk=k+o;if(sn[kk]||g[kk]===1||g[kk]===2||g[kk]===3)continue;sn[kk]=1;q2.push(kk);}}
     if(!sn[gy*W+gx])continue;if(beacon&&![1,-1,W,-W].some(o=>sn[beacon.ty*W+beacon.tx+o]))continue;}
-  return {W,H,g,ft,wt,rooms:R,start,objs,decor,en,beacon,gate,mini,woodGate:!!S.woodGate,spawn:{x:start.cx*TS+8,y:start.cy*TS+12},depth:d,kind:'floor',seen:new Uint8Array(N),
+  // 出発点:部屋の中心が水や物なら、いちばん近い広い床へ
+  let spawn={x:start.cx*TS+8,y:start.cy*TS+12};{const ok=(x,y)=>{const k=y*W+x;if(x<1||y<1||x>=W-1||y>=H-1||g[k]!==0)return false;for(const [a,b] of [[1,0],[-1,0],[0,1],[0,-1]]){const v=g[k+a+b*W];if(v===1||v===3)return false;}return true;};
+    if(!ok(start.cx,start.cy)){const seen=new Uint8Array(N),q=[[start.cx,start.cy]];seen[start.cy*W+start.cx]=1;while(q.length){const [x,y]=q.shift();if(ok(x,y)){spawn={x:x*TS+8,y:y*TS+10};break;}
+      for(const [a,b] of [[1,0],[-1,0],[0,1],[0,-1]]){const xx=x+a,yy=y+b;if(xx<0||yy<0||xx>=W||yy>=H||seen[yy*W+xx]||g[yy*W+xx]===1)continue;seen[yy*W+xx]=1;q.push([xx,yy]);}}}}
+  return {W,H,g,ft,wt,rooms:R,start,objs,decor,en,beacon,gate,mini,woodGate:!!S.woodGate,spawn,depth:d,kind:'floor',seen:new Uint8Array(N),
     roomAt(x,y){for(const r of R)if(x>=r.x0&&y>=r.y0&&x<r.x0+r.w&&y<r.y0+r.h)return r;return null;}};}
   return genFloor(d);}
 
@@ -5150,6 +5154,56 @@ function offerPowers(p,rare){const pool=[];for(const k in POW){const l=p.ups[k]|
     const tc=tagCount(p);for(const t of POW[k].t)if(tc[t])w+=2;if(l)w+=2;for(let i=0;i<w;i++)pool.push(k);}
   const pick=[];while(pick.length<3&&pool.length){const k=pool[rnd()*pool.length|0];if(!pick.includes(k))pick.push(k);for(let i=pool.length-1;i>=0;i--)if(pool[i]===k)pool.splice(i,1);}return pick;}
 
+// =====================================================================
+//  光の後処理(2D のまま):色つきの光、にじみ、周辺の暗さ
+//  画面の絵と光の絵(どちらも低解像度)を WebGL で合わせる
+// =====================================================================
+const PFX=(()=>{let gl=null,cvs=null,on=false,W=1,H=1,S=1,DPR=1,prog={},tex={},fb={},buf=null;
+  const VS='attribute vec2 p;varying vec2 v;void main(){v=p*.5+.5;gl_Position=vec4(p,0.,1.);}';
+  const FS={
+    comp:`precision mediump float;varying vec2 v;uniform sampler2D sc,li;uniform vec2 px;
+      void main(){vec3 b=texture2D(sc,v).rgb;vec3 L=texture2D(li,v).rgb*2.0;
+        float e=smoothstep(.72,.95,b.b)*smoothstep(.68,.9,b.g)*smoothstep(.08,.22,b.b-b.r);
+        vec3 c=b*L+L*L*.025+b*e*.45;gl_FragColor=vec4(c*.5,1.);}`,
+    bright:`precision mediump float;varying vec2 v;uniform sampler2D t;void main(){vec3 c=texture2D(t,v).rgb*2.;float l=max(c.r,max(c.g,c.b));gl_FragColor=vec4(c*smoothstep(.8,1.35,l)*.5,1.);}`,
+    blur:`precision mediump float;varying vec2 v;uniform sampler2D t;uniform vec2 d;
+      void main(){vec4 s=texture2D(t,v)*.2270;s+=(texture2D(t,v+d*1.385)+texture2D(t,v-d*1.385))*.3162;s+=(texture2D(t,v+d*3.231)+texture2D(t,v-d*3.231))*.0703;gl_FragColor=s;}`,
+    fin:`precision mediump float;varying vec2 v;uniform sampler2D t,bl;uniform float asp,str;
+      void main(){vec3 c=texture2D(t,v).rgb*2.;vec3 g=texture2D(bl,v).rgb*2.;c+=g*str;
+        float l=dot(c,vec3(.299,.587,.114));c=mix(vec3(l),c,1.12);
+        c=mix(c*vec3(.86,.92,1.08),c*vec3(1.04,1.,.94),smoothstep(.15,.7,l));
+        c=c/(1.+max(l-1.,0.)*.35);
+        vec2 q=(v-.5)*vec2(asp,1.);c*=mix(.55,1.,smoothstep(.95,.32,length(q)));gl_FragColor=vec4(c,1.);}`};
+  function sh(t,src){const s=gl.createShader(t);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(s));return s;}
+  function mkProg(fs){const p=gl.createProgram();gl.attachShader(p,sh(gl.VERTEX_SHADER,VS));gl.attachShader(p,sh(gl.FRAGMENT_SHADER,fs));gl.bindAttribLocation(p,0,'p');gl.linkProgram(p);if(!gl.getProgramParameter(p,gl.LINK_STATUS))throw new Error('link');p.u={};return p;}
+  const U=(p,n)=>p.u[n]!==undefined?p.u[n]:(p.u[n]=gl.getUniformLocation(p,n));
+  function mkTex(filter){const t=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,t);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,filter);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,filter);
+    gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);return t;}
+  function mkFb(w,h,filter){const t=mkTex(filter);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,w,h,0,gl.RGBA,gl.UNSIGNED_BYTE,null);const f=gl.createFramebuffer();gl.bindFramebuffer(gl.FRAMEBUFFER,f);gl.framebufferTexture2D(gl.FRAMEBUFFER,gl.COLOR_ATTACHMENT0,gl.TEXTURE_2D,t,0);return {f,t,w,h};}
+  function freeFb(o){if(!o)return;gl.deleteFramebuffer(o.f);gl.deleteTexture(o.t);}
+  function init(){try{cvs=document.createElement('canvas');cvs.id='pfxcv';cvs.style.cssText='position:fixed;left:0;top:0;display:none;touch-action:none';
+      const base=document.getElementById('cv');base.parentNode.insertBefore(cvs,base);
+      gl=cvs.getContext('webgl',{alpha:false,antialias:false,premultipliedAlpha:false,preserveDrawingBuffer:false});if(!gl)return false;
+      for(const k in FS)prog[k]=mkProg(FS[k]);
+      buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
+      tex.sc=mkTex(gl.NEAREST);tex.li=mkTex(gl.LINEAR);gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);
+      return true;}catch(e){gl=null;return false;}}
+  function resize(w,h,s){if(!gl)return;W=w;H=h;S=s;DPR=Math.min(window.devicePixelRatio||1,2);cvs.width=Math.round(W*S*DPR);cvs.height=Math.round(H*S*DPR);cvs.style.width=W*S+'px';cvs.style.height=H*S+'px';
+    for(const k of ['a','b','c'])freeFb(fb[k]);fb.a=mkFb(W,H,gl.NEAREST);const hw=Math.max(1,W>>1),hh=Math.max(1,H>>1);fb.b=mkFb(hw,hh,gl.LINEAR);fb.c=mkFb(hw,hh,gl.LINEAR);}
+  function pass(p,target,binds,uni){gl.bindFramebuffer(gl.FRAMEBUFFER,target?target.f:null);gl.viewport(0,0,target?target.w:cvs.width,target?target.h:cvs.height);gl.useProgram(p);
+    let i=0;for(const n in binds){gl.activeTexture(gl.TEXTURE0+i);gl.bindTexture(gl.TEXTURE_2D,binds[n]);gl.uniform1i(U(p,n),i);i++;}
+    for(const n in uni||{}){const v=uni[n];if(typeof v==='number')gl.uniform1f(U(p,n),v);else gl.uniform2f(U(p,n),v[0],v[1]);}
+    gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.enableVertexAttribArray(0);gl.vertexAttribPointer(0,2,gl.FLOAT,false,0,0);gl.drawArrays(gl.TRIANGLE_STRIP,0,4);}
+  function draw(scene,light,bloomStr){if(!gl)return;
+    gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,tex.sc);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,scene);
+    gl.bindTexture(gl.TEXTURE_2D,tex.li);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,light);
+    pass(prog.comp,fb.a,{sc:tex.sc,li:tex.li});
+    pass(prog.bright,fb.b,{t:fb.a.t});
+    const hw=fb.b.w,hh=fb.b.h;for(const r of [1,2.2]){pass(prog.blur,fb.c,{t:fb.b.t},{d:[r/hw,0]});pass(prog.blur,fb.b,{t:fb.c.t},{d:[0,r/hh]});}
+    pass(prog.fin,null,{t:fb.a.t,bl:fb.b.t},{asp:W/H,str:bloomStr==null?1:bloomStr});}
+  function setEnabled(v){on=!!v&&!!gl;if(cvs)cvs.style.display=on?'block':'none';}
+  return {init,resize,draw,setEnabled,get ok(){return !!gl;},get on(){return on;}};})();
+
 
 // =====================================================================
 //  結晶化の病 外伝 — 潮の岸(タルコフ式ローグライク 試作その1)
@@ -5160,7 +5214,7 @@ const cv=$('cv');let cx=cv.getContext('2d');let HDDRAW=false;
 const lightCv=document.createElement('canvas'),lg=lightCv.getContext('2d');
 let W=100,H=200,S=4;
 function resize(){const vw=innerWidth,vh=innerHeight;S=Math.max(2,Math.floor(Math.min(vw/118,vh/200)));W=Math.ceil(vw/S);H=Math.ceil(vh/S);
-  cv.width=W;cv.height=H;cv.style.width=W*S+'px';cv.style.height=H*S+'px';lightCv.width=W;lightCv.height=H;cx.imageSmoothingEnabled=false;if(window.HD&&HD.ok)HD.resize(vw,vh);}
+  cv.width=W;cv.height=H;cv.style.width=W*S+'px';cv.style.height=H*S+'px';lightCv.width=W;lightCv.height=H;cx.imageSmoothingEnabled=false;if(window.HD&&HD.ok)HD.resize(vw,vh);if(window.PFX&&PFX.ok)PFX.resize(W,H,S);}
 addEventListener('resize',resize);resize();
 const rnd=Math.random,clamp=(v,a,b)=>v<a?a:v>b?b:v,D2R=Math.PI/180;
 const angDiff=(a,b)=>{let d=a-b;while(d>Math.PI)d-=Math.PI*2;while(d<-Math.PI)d+=Math.PI*2;return Math.abs(d);};
@@ -5215,7 +5269,7 @@ function rollQuest(src,x,y,key,room){for(const id in QUEST){const Q=QUEST[id],t=
     let pr=0;if(src==='box'){pr=Q.box||0;if(Q.th&&!(room&&Q.th.includes(room.th)))pr*=.3;}else pr=(Q.kill&&Q.kill[key])||0;
     if(rnd()<pr)dropItem(x,y,{id:newId(),type:'quest',rarity:3,name:Q.n,ic:Q.ic,task:id});}}
 // 版の番号:ver0.大きな更新.直し。完成したら ver1.0.0
-const GAME_V='0.12.0';
+const GAME_V='0.13.0';
 let uid=1;const newId=()=>Date.now().toString(36)+(uid++);
 function rollRarity(depth,bonus){const w=[82,12+depth*1.5+bonus*8,3+depth*.9+bonus*5,.4+depth*.3+bonus*2];let t=w.reduce((a,b)=>a+b),r=rnd()*t;for(let i=0;i<4;i++){r-=w[i];if(r<=0)return i;}return 0;}
 function rollTraits(n,pool){const out=[],ks=pool.slice();for(let i=0;i<n&&ks.length;i++){const k=ks.splice(rnd()*ks.length|0,1)[0],T=TRAITS[k];out.push({k,v:Math.round(T.r[0]+rnd()*(T.r[1]-T.r[0]))});}return out;}
@@ -5942,9 +5996,9 @@ function drawOverlay(){const b=sec.beacon;
   if(joy.on&&state==='play'){const x=joy.ox/S,y=joy.oy/S,kx=joy.x/S,ky=joy.y/S,R=JR/S;cx.globalAlpha=.28;cx.strokeStyle='#e8fcff';cx.lineWidth=1;cx.beginPath();cx.arc(Math.round(x)+.5,Math.round(y)+.5,R,0,6.28);cx.stroke();
     cx.globalAlpha=.45;cx.fillStyle='#e8fcff';cx.beginPath();cx.arc(Math.round(kx),Math.round(ky),5,0,6.28);cx.fill();cx.globalAlpha=1;}}
 // ===================== HD-2D =====================
-function gfxMode(){return (save.opt&&save.opt.gfx)||'hd';}
+function gfxMode(){return (save.opt&&save.opt.disp)||'pfx';}
 let hdTried=false;
-function useHD(){if(!secCv||!P||gfxMode()==='2d'||!window.HD)return false;if(!HD.ok){if(hdTried)return false;hdTried=true;if(!HD.init())return false;applyGfx();HD.resize(innerWidth,innerHeight);}return true;}
+function useHD(){const m=gfxMode();if(!secCv||!P||(m!=='hd'&&m!=='hdhi')||!window.HD)return false;if(!HD.ok){if(hdTried)return false;hdTried=true;if(!HD.init())return false;applyGfx();HD.resize(innerWidth,innerHeight);}return true;}
 function applyGfx(){if(window.HD&&HD.ok)HD.setQuality(gfxMode()==='hdhi'?Math.min(devicePixelRatio||1,2):1);}
 function withCtx(ctx,wx,wy,fx,fy,f){const c0=cx,a=ox,b=oy;cx=ctx;ox=wx-fx;oy=wy-fy;HDDRAW=true;try{f();}finally{cx=c0;ox=a;oy=b;HDDRAW=false;}}
 const HDOPT={drawObj:(o,ctx,fx,fy)=>withCtx(ctx,o.x,o.y,fx,fy,()=>drawObj(o)),objKey:o=>o.type+(o.opened?'o':''),
@@ -5980,7 +6034,25 @@ function hdRender(){HD.setEnabled(true);cx.clearRect(0,0,W,H);
   for(const n of nums){const k=n.t/.8;cx.globalAlpha=k>.6?(1-k)/.4:1;const p=HD.project(n.x,n.y+16,16+k*12);drawNum(n.v,p.x/S,p.y/S,n.col);}cx.globalAlpha=1;
   if(joy.on&&state==='play'){const x=joy.ox/S,y=joy.oy/S,kx=joy.x/S,ky=joy.y/S,R=JR/S;cx.globalAlpha=.28;cx.strokeStyle='#e8fcff';cx.lineWidth=1;cx.beginPath();cx.arc(Math.round(x)+.5,Math.round(y)+.5,R,0,6.28);cx.stroke();
     cx.globalAlpha=.45;cx.fillStyle='#e8fcff';cx.beginPath();cx.arc(Math.round(kx),Math.round(ky),5,0,6.28);cx.fill();cx.globalAlpha=1;}}
+let pfxTried=false;
+function usePFX(){if(!secCv||!P||gfxMode()!=='pfx'||typeof PFX==='undefined')return false;if(!PFX.ok){if(pfxTried)return false;pfxTried=true;if(!PFX.init())return false;PFX.resize(W,H,S);}return true;}
+// 光の絵:暗がりの色を敷き、色つきの光を足していく
+function lightMap(){const dk=STG.dark||[3,4,14,.62],night=!!sec.night,a=night?.94:dk[3],amb=(1-a)*.42*255;
+  lg.globalCompositeOperation='source-over';lg.fillStyle=`rgb(${amb*.8+dk[0]|0},${amb*.86+dk[1]|0},${amb+dk[2]|0})`;lg.fillRect(0,0,W,H);lg.globalCompositeOperation='lighter';
+  const L=(x,y,r,c,al)=>{x-=ox;y-=oy;if(x<-r||y<-r||x>W+r||y>H+r)return;const gr=lg.createRadialGradient(x,y,0,x,y,r);gr.addColorStop(0,`rgba(${c},${al})`);gr.addColorStop(.45,`rgba(${c},${al*.4})`);gr.addColorStop(1,`rgba(${c},0)`);lg.fillStyle=gr;lg.fillRect(x-r,y-r,r*2,r*2);};
+  if(!P.dead)L(P.x,P.y-8,(night?50:72)+Math.sin(T*7)*2,'255,232,200',.42);
+  for(const o of sec.objs){if(o.type==='lamp')L(o.x,o.y-24,64+Math.sin(T*9+o.x)*2,'255,156,76',.85+Math.sin(T*23+o.y)*.04);else if(o.type==='crystal')L(o.x,o.y-10,42+Math.sin(T*2+o.x)*3,'100,196,255',.6);else if(o.type==='beacon')L(o.x,o.y-14,74+Math.sin(T*5)*3,'95,216,248',.9);}
+  if(sec.exitX>=0)L(sec.exitX*TS+TS,TS,56,sec.sealed?'230,70,80':'90,170,240',.75);if(sec.gate)L(sec.gate.x,sec.gate.y-8,58,sec.gate.sealed?'230,70,80':'90,170,240',.8);
+  for(const q of projs)L(q.x,q.y,q.en?18:12,q.en?'140,220,255':q.glob?'150,230,110':'232,252,255',q.en?.55:.35);
+  for(const e of enemies){if(e.dead)continue;if(e.st==='wind'||e.st==='cwind')L(e.x,e.y-6,24,'255,70,80',.45);else if(e.kind==='crawler')L(e.x,e.y-6,20,'110,200,255',.4);
+    if(e.elite)L(e.x,e.y-8,22,'255,200,90',.35);if(e.boss||e.mini)L(e.x,e.y-10,42,e.kind==='iska'?'70,150,190':e.kind==='chief'?'110,170,70':e.kind==='priest'?'150,210,250':'180,90,100',.3);}
+  for(const q of parts)if(q.ff)L(q.x,q.y,14,'232,240,112',.5);
+  for(const k of picks)if(k.kind==='xp')L(k.x,k.y-1,10,'120,210,255',.35);
+  for(const t of trails)L(t.x,t.y,9,'184,224,255',.22*Math.min(1,t.t));
+  for(const h of haz)L(h.x,h.y,h.r+6,'120,200,80',.25);
+  lg.globalCompositeOperation='source-over';}
 function render(){if(useHD()){hdRender();return;}if(window.HD&&HD.on)HD.setEnabled(false);
+  const pf=usePFX();if(!pf&&typeof PFX!=='undefined'&&PFX.on)PFX.setEnabled(false);
   cx.fillStyle='#05060f';cx.fillRect(0,0,W,H);if(!secCv||!P)return;
   ox=Math.round(cam.x+(rnd()-.5)*shk*2);oy=Math.round(cam.y+(rnd()-.5)*shk*2);cx.drawImage(secCv,-ox,-oy);
   // 水面のきらめき
@@ -5992,6 +6064,8 @@ function render(){if(useHD()){hdRender();return;}if(window.HD&&HD.on)HD.setEnabl
   if(!P.dead)list.push([P.y,drawPlayerFull]);
   list.sort((a,b)=>a[0]-b[0]);for(const l of list)l[1]();
   drawAbove();
+  if(pf){for(const q of parts){cx.globalAlpha=1-q.t/q.life;cx.fillStyle=q.col;cx.fillRect(Math.round(q.x-ox),Math.round(q.y-oy),1,1);}cx.globalAlpha=1;
+    lightMap();PFX.setEnabled(true);PFX.draw(cv,lightCv,1);cx.clearRect(0,0,W,H);drawTels();drawOverlay();return;}
   for(const q of parts){cx.globalAlpha=1-q.t/q.life;cx.fillStyle=q.col;cx.fillRect(Math.round(q.x-ox),Math.round(q.y-oy),1,1);}cx.globalAlpha=1;
   // 暗がりと光
   lg.globalCompositeOperation='source-over';lg.clearRect(0,0,W,H);{const dk=STG.dark||[3,4,14,.62];lg.fillStyle=`rgba(${dk[0]},${dk[1]},${dk[2]},${sec.night?.94:dk[3]})`;}lg.fillRect(0,0,W,H);lg.globalCompositeOperation='destination-out';
@@ -6038,9 +6112,9 @@ function itemCard(it,actions){return `<div class="card r${it.rarity}">${icoHTML(
 function title(){applyHand();state='title';$('hud').classList.add('hide');P=null;
   scr(`<h1>Rime Raid<small>結晶化の病 外伝</small></h1><div style="height:20vh"></div>
   <p class="cen">宿営地から出撃し、区画を奥へ進み、漁り、帰還の灯で帰る。<br>倒れたら、持っている物はすべて失う。</p>
-  ${save.run?`<button class="btn" id="b-resume" type="button">出撃の続きへ<small style="display:block;font-size:11px">${(STAGES[save.run.stage]||STAGES.shore).n} ・ ${(STAGES[save.run.stage]||STAGES.shore).secName(save.run.depth)}</small></button>`:''}<button class="btn${save.run?' ghost':''}" id="b-camp" type="button">宿営地へ</button><button class="btn ghost" id="b-how" type="button">遊び方</button><button class="btn ghost" id="b-hand" type="button">持ち手：${save.opt&&save.opt.left?'左手':'右手'}</button><button class="btn ghost" id="b-gfx" type="button">表示：${{hd:'HD-2D',hdhi:'HD-2D 高精細','2d':'2D'}[gfxMode()]}</button><button class="btn ghost" id="b-io" type="button">記録を書き出す・読み込む</button><button class="btn ghost" id="b-reset" type="button">記録を消す</button>
+  ${save.run?`<button class="btn" id="b-resume" type="button">出撃の続きへ<small style="display:block;font-size:11px">${(STAGES[save.run.stage]||STAGES.shore).n} ・ ${(STAGES[save.run.stage]||STAGES.shore).secName(save.run.depth)}</small></button>`:''}<button class="btn${save.run?' ghost':''}" id="b-camp" type="button">宿営地へ</button><button class="btn ghost" id="b-how" type="button">遊び方</button><button class="btn ghost" id="b-hand" type="button">持ち手：${save.opt&&save.opt.left?'左手':'右手'}</button><button class="btn ghost" id="b-gfx" type="button">表示：${{pfx:'2D 光',hd:'HD-2D',hdhi:'HD-2D 高精細','2d':'2D'}[gfxMode()]}</button><button class="btn ghost" id="b-io" type="button">記録を書き出す・読み込む</button><button class="btn ghost" id="b-reset" type="button">記録を消す</button>
   <p class="cen small">ver${GAME_V}</p><p class="cen small" id="saveNote">${saveNoteText()}</p>`);
-  $('b-camp').onclick=camp;$('b-how').onclick=how;if($('b-resume'))$('b-resume').onclick=resumeRun;$('b-reset').onclick=()=>resetScreen(0);$('b-io').onclick=ioScreen;if($('b-gfx'))$('b-gfx').onclick=()=>{save.opt=save.opt||{};const m=gfxMode();save.opt.gfx=m==='hd'?'hdhi':m==='hdhi'?'2d':'hd';applyGfx();persist();title();};$('b-hand').onclick=()=>{save.opt=save.opt||{};save.opt.left=!save.opt.left;applyHand();persist();title();};}
+  $('b-camp').onclick=camp;$('b-how').onclick=how;if($('b-resume'))$('b-resume').onclick=resumeRun;$('b-reset').onclick=()=>resetScreen(0);$('b-io').onclick=ioScreen;if($('b-gfx'))$('b-gfx').onclick=()=>{save.opt=save.opt||{};const m=gfxMode();save.opt.disp={pfx:'2d','2d':'hd',hd:'hdhi',hdhi:'pfx'}[m]||'pfx';applyGfx();persist();title();};$('b-hand').onclick=()=>{save.opt=save.opt||{};save.opt.left=!save.opt.left;applyHand();persist();title();};}
 function applyHand(){document.getElementById('ui').classList.toggle('lefty',!!(save.opt&&save.opt.left));}
 // ---- 記録の書き出し・読み込み(端末どうしで記録を移す) ----
 // 書き出し:JSON → (縮められるなら deflate で縮めて) → base64。末尾に検査用の数字を付けて、途中で切れたら分かるようにする
@@ -6310,16 +6384,21 @@ function resumeRun(){const S=save.run;if(!S)return;curStage=S.stage;STG=STAGES[S
   sec=unpackObj(S.sec);if(sec.rooms){const R=sec.rooms;sec.roomAt=(x,y)=>{for(const r of R)if(x>=r.x0&&y>=r.y0&&x<r.x0+r.w&&y<r.y0+r.h)return r;return null;};}
   sec.beacon=(sec.objs||[]).find(o=>o.type==='beacon')||null;drawSection();
   enemies=S.en.map(o=>Object.assign(o,{d:EDEF[o.kind]}));picks=S.picks||[];projs=[];tels=[];fx=[];parts=[];haz=[];trails=[];later=[];nums=[];
-  P=newPlayer();Object.assign(P,S.P);P.atk=null;P.inv=1;applyPowers(P);runLog=S.runLog;runExp=S.runExp||0;nextRare=S.nextRare||0;pendingLv=S.pendingLv||0;
+  P=newPlayer();Object.assign(P,S.P);P.atk=null;P.inv=1;applyPowers(P);fixSpawn();runLog=S.runLog;runExp=S.runExp||0;nextRare=S.nextRare||0;pendingLv=S.pendingLv||0;
   boss=null;$('boss').classList.add('hide');const b=enemies.find(e=>e.boss||e.mini&&e.aggro);if(b&&b.st!=='intro'){boss=b;$('boss').classList.remove('hide');$('bossn').textContent=b.d.n;}
   // ボスを倒した直後に閉じていたら、灯と扉を整えておく
   if(sec.boss&&!enemies.some(e=>e.boss)){const bs=sec.beaconSpot;if(bs&&!sec.beacon){sec.g[bs.ty*SW+bs.tx]=2;sec.beacon={type:'beacon',tx:bs.tx,ty:bs.ty,x:bs.tx*TS+8,y:bs.ty*TS+12};sec.objs.push(sec.beacon);}
     if(depth===STG.gateD&&sec.exitX<0){for(let y=0;y<5;y++)for(const xx of [8,9])sec.g[y*SW+xx]=0;sec.exitX=8;sec.sealed=false;drawSection();}}
   cam.x=clamp(P.x-W/2,0,Math.max(0,SW*TS-W));cam.y=clamp(P.y-H/2,0,Math.max(0,SH*TS-H));hudCache='';hideScr();$('hud').classList.remove('hide');extractT=0;state='play';togglePause();}
 function abandonRun(){save.run=null;save.eq={weapon:STARTER(),armor:null};save.bag=[];persist();}
+// 立てない所に置かれたら、いちばん近い広い床へ
+function fixSpawn(){if(!P||!sec)return;const r=P.r||5;const free=(tx,ty)=>{if(solidT(tx,ty))return false;let n=0;for(const [a,b] of [[1,0],[-1,0],[0,1],[0,-1]])if(!solidT(tx+a,ty+b))n++;return n>=3&&!blocked(tx*TS+8,ty*TS+10,r);};
+  if(!blocked(P.x,P.y,r)){const tx=Math.floor(P.x/TS),ty=Math.floor(P.y/TS);let n=0;for(const [a,b] of [[1,0],[-1,0],[0,1],[0,-1]])if(!solidT(tx+a,ty+b))n++;if(n>=2)return;}
+  const sx=clamp(Math.floor(P.x/TS),0,SW-1),sy=clamp(Math.floor(P.y/TS),0,SH-1),seen=new Uint8Array(SW*SH),q=[[sx,sy]];seen[sy*SW+sx]=1;
+  while(q.length){const [x,y]=q.shift();if(free(x,y)){P.x=x*TS+8;P.y=y*TS+10;return;}for(const [a,b] of [[1,0],[-1,0],[0,1],[0,-1]]){const xx=x+a,yy=y+b;if(xx<0||yy<0||xx>=SW||yy>=SH||seen[yy*SW+xx])continue;seen[yy*SW+xx]=1;q.push([xx,yy]);}}}
 function startRun(stage,entry){stage=stage||'shore';curStage=stage;STG=STAGES[stage];const en=(STG.entries.find(x=>x.id===entry)||STG.entries[0]);save.runs++;P=newPlayer();save.bag=[];persist();runLoot=[];runExp=0;runLog={kill:0,open:0,sec:0,boss:0,maxD:0,stage};depth=en.d;pendingLv=0;hideScr();$('hud').classList.remove('hide');nextSection(true);state='play';nextRare=0;later.push({t:.5,f:()=>{if(state==='play')levelUp(true);}});}
 function nextSection(first){const go=()=>{depth++;pw=STG.base+depth;haz=[];trails=[];runLog.maxD=Math.max(runLog.maxD||0,depth);boss=null;$('boss').classList.add('hide');sec=genSection(depth);drawSection();enemies=sec.en.map(([k,x,y,el])=>{const e=mkE(k,x,y);if(el){e.elite=1;e.hp=e.max=Math.round(e.max*2.6);e.dmg*=1.4;e.r+=1;}return e;});projs=[];picks=[];tels=[];fx=[];parts=[];extractT=0;
-    P.x=sec.spawn.x;P.y=sec.spawn.y;P.inv=.8;P.atk=null;cam.x=clamp(P.x-W/2,0,Math.max(0,SW*TS-W));cam.y=SH*TS-H+8;hudCache='';
+    P.x=sec.spawn.x;P.y=sec.spawn.y;fixSpawn();P.inv=.8;P.atk=null;cam.x=clamp(P.x-W/2,0,Math.max(0,SW*TS-W));cam.y=SH*TS-H+8;hudCache='';
     if(P.roomHeal&&!first)heal(P.roomHeal);if(!first)gainExp(6+pw*2,'sec');toast(secName(depth)+(sec.beacon?' ・ 帰還の灯あり':''),sec.beacon?'#8ff4ff':sec.boss?'#ffd27a':'#ece6d6');if(sec.mini)later.push({t:1.4,f:()=>toast('どこかに、主の気配がする','#ffd27a')});setTimeout(snapRun,600);};
   if(first){go();return;}state='trans';$('fade').classList.add('on');setTimeout(()=>{go();$('fade').classList.remove('on');state='play';},380);}
 function extract(){state='trans';$('fade').classList.add('on');setTimeout(()=>{$('fade').classList.remove('on');endRun(true);},500);}
@@ -6396,7 +6475,7 @@ window.__g={get P(){return P;},get enemies(){return enemies;},get state(){return
 
 </script>
 <script>if('serviceWorker' in navigator&&location.protocol==='https:'&&window.top===window){addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>{r.update();}).catch(()=>{}));
-navigator.serviceWorker&&navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!window.__reloaded){window.__reloaded=1;}});}</script><script>window.BUILD_V='202611211531';
+navigator.serviceWorker&&navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!window.__reloaded){window.__reloaded=1;}});}</script><script>window.BUILD_V='202611231022';
 // 新しい版を探す:開いたとき・前に戻ってきたとき。タイトルか宿営地にいれば、そのまま読み込み直す
 let __pendingUpd=false;function __chkUpd(){if(location.protocol!=='https:')return;fetch('version.json?'+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{if(j&&j.v&&j.v!==window.BUILD_V){let done='';try{done=localStorage.getItem('rr_upd')||'';}catch(e){}if(done!==j.v){__pendingUpd=j.v;__tryUpd();}}}).catch(()=>{});}
 function __tryUpd(){if(!__pendingUpd)return;try{if(typeof state!=='undefined'&&(state==='title'||state==='camp')){try{localStorage.setItem('rr_upd',__pendingUpd);}catch(e){}__pendingUpd=false;location.reload();}}catch(e){}}
