@@ -5455,10 +5455,57 @@ function mineRegister(){
     m7:{n:'昇降機の歯車',ic:'gear',st:'mine',box:.1,minD:3,th:['rail','shaft'],w:'坑道3より奥の軌道の箱'}});
   
   Object.assign(FIXED,{
-    beetleMail:()=>({id:newId(),type:'armor',rarity:3,kind:'plate',name:'甲虫殻の鎧',traits:[{k:'def',v:6},{k:'hp',v:22}],lore:'炉守の大甲虫の殻を打った鎧。熱にも刃にも強い。'}),
+    beetleMail:()=>({id:newId(),type:'armor',rarity:3,kind:'scale',name:'甲虫殻の鎧',traits:[{k:'def',v:6},{k:'hp',v:22}],lore:'炉守の大甲虫の殻を打った鎧。熱にも刃にも強い。'}),
     wardenChain:()=>({id:newId(),type:'weapon',rarity:4,unique:1,name:'番人の鎖槌',spec:Object.assign({},WARDEN_W),traits:[{k:'atk',v:26},{k:'hp',v:24},{k:'def',v:3}],lore:'昇降機の番人の槌。言いつけの重さが、柄に残っている。'}),
     grenaHammer:()=>({id:newId(),type:'weapon',rarity:4,unique:1,name:'炉の母槌',spec:Object.assign({},GRENA_W),traits:[{k:'atk',v:30},{k:'crit',v:10},{k:'spd',v:8}],lore:'鍛冶の母の槌。打った物は、その晩のうちに溶かされた。この槌だけが残った。'})});
   TASKS.push(...MINE_TASKS,...SEARCH_TASKS);}
+
+
+// =====================================================================
+//  防具の型:軽(外套)・中(革)・重(板金)。b は絵の元、t は出回りはじめる段
+//  def 守り / mv 足の速さ / hp 最大HP / pr 店の元値
+// =====================================================================
+const ARMOR={none:{n:'防具なし',def:0,mv:0,w:'',t:0,pr:0},
+  // 軽い:外套
+  cloak:{n:'旅の外套',w:'軽',b:'cloak',def:2,mv:.06,t:0,pr:40},
+  hood:{n:'漁り人の頭巾',w:'軽',b:'cloak',def:3,mv:.08,t:1,pr:55},
+  oilcoat:{n:'油引きの合羽',w:'軽',b:'cloak',def:3,mv:.04,hp:8,t:1,pr:55},
+  vinecape:{n:'ヒタの蔓編み',w:'軽',b:'cloak',def:4,mv:.12,t:4,pr:90},
+  robe:{n:'不朽派の法衣',w:'軽',b:'cloak',def:5,mv:.05,hp:10,t:4,pr:95},
+  apron:{n:'火守りの前掛け',w:'軽',b:'cloak',def:6,mv:.07,hp:10,t:6,pr:130},
+  // 中くらい:革
+  leather:{n:'革の胴着',w:'中',b:'leather',def:4,mv:0,t:0,pr:60},
+  gambeson:{n:'綿入れの鎧下',w:'中',b:'leather',def:5,mv:-.02,hp:6,t:0,pr:65},
+  uniform:{n:'港衛の制服',w:'中',b:'leather',def:6,mv:0,t:2,pr:85},
+  brigandine:{n:'ブリガンダイン',w:'中',b:'leather',def:7,mv:-.03,hp:6,t:3,pr:105},
+  boarhide:{n:'猪革の胴着',w:'中',b:'leather',def:7,mv:.03,t:4,pr:110},
+  scale:{n:'鱗鎧',w:'中',b:'leather',def:9,mv:-.05,hp:8,t:5,pr:140},
+  minerhide:{n:'坑夫の革鎧',w:'中',b:'leather',def:9,mv:0,hp:12,t:6,pr:160},
+  // 重い:板金
+  chain:{n:'鎖帷子',w:'重',b:'plate',def:7,mv:-.06,t:1,pr:80},
+  plate:{n:'板金鎧',w:'重',b:'plate',def:8,mv:-.1,t:1,pr:95},
+  harborplate:{n:'封鎖令の鎧',w:'重',b:'plate',def:10,mv:-.11,hp:10,t:3,pr:150},
+  crystalplate:{n:'結晶の板金鎧',w:'重',b:'plate',def:11,mv:-.09,hp:12,t:5,pr:185},
+  forgeplate:{n:'火床の重鎧',w:'重',b:'plate',def:13,mv:-.12,hp:16,t:7,pr:240}};
+const armorOf=k=>ARMOR[k]||ARMOR.leather;
+// 絵:元の形を借り、色を塗り替える
+(function(){const C=(k,base,col)=>{OVER[k]=OVER[base];RECOLOR[k]=Object.assign({},RECOLOR[base]||{},col);};
+  C('hood','cloak',{v:'#2a2a30',w:'#4a4a54',W:'#6a6a76',Z:'#8a8a96',n:'#1a1a22',N:'#2e2e38','7':'#44444e',A:'#8a7a5a',a:'#5a4e3a'});
+  C('oilcoat','cloak',{v:'#7a6420',w:'#b8962e',W:'#d8b848',Z:'#f0d870',n:'#4a3a12',N:'#6e5a1c','7':'#9a7e2a',A:'#3a3020',a:'#241e14'});
+  C('vinecape','cloak',{v:'#24401e',w:'#3a6a2e',W:'#5a9a44',Z:'#8ac060',n:'#14260f',N:'#24401e','7':'#3a6a2e',A:'#c86a9a',a:'#8a3a6a'});
+  C('robe','cloak',{v:'#8a86a0',w:'#c8c4d8',W:'#ece8f6',Z:'#ffffff',n:'#3a2a5a',N:'#5a4a8a','7':'#7a6aaa',A:'#8fd6f0',a:'#4f86ad'});
+  C('apron','cloak',{v:'#2a2220',w:'#4a3a32',W:'#6a5446',Z:'#8a7058',n:'#5a1e10',N:'#8a3018','7':'#c8501e',A:'#ff9a3a',a:'#c8501e'});
+  C('gambeson','leather',{C:'#c8bc9a',c:'#9a8e70',d:'#4e4634','6':'#e4dcc0',F:'#d8ccaa',f:'#9a8e70',L:'#b8aa86',l:'#6e6450'});
+  C('uniform','leather',{C:'#2c3466',c:'#1c2248',d:'#10142e','6':'#4a5aa0',F:'#34428a',f:'#1c2250',L:'#c8a040',l:'#7a5a20',D:'#c8a040'});
+  C('brigandine','leather',{F:'#8a2a2a',f:'#521c1c',L:'#c8a040',l:'#7a5a20',D:'#3a2a1a'});
+  C('boarhide','leather',{F:'#7a5a40',f:'#4a3222',L:'#a8845e',l:'#5a3e28'});
+  C('scale','leather',{F:'#5a9a84',f:'#2e5a4c',L:'#9ad0bc',l:'#3a6a5a',D:'#2a4a40'});
+  C('minerhide','leather',{F:'#4a3a32',f:'#2a1e18',L:'#c89030',l:'#7a5a20',D:'#7a5a20'});
+  C('chain','plate',{M:'#9aa2b2',m:'#5e6676',T:'#c8d0dc','8':'#2a3040',Q:'#6a7080',q:'#3a4050',G:'#8a8a96',g:'#5a5a66'});
+  C('harborplate','plate',RECOLOR.captain?Object.assign({},RECOLOR.captain):{});
+  C('crystalplate','plate',{M:'#8fd6f0',m:'#4f86ad',T:'#e8fcff','8':'#1e3a58',Q:'#5fd8f8',q:'#2f8ab0',G:'#e8fcff',g:'#8fd6f0',V:'#0c1a2a'});
+  C('forgeplate','plate',{M:'#4a3a3e',m:'#2a2024',T:'#7a6468','8':'#120c0e',Q:'#ff8a2a',q:'#c8501e',G:'#ff9a3a',g:'#c8501e',V:'#ff6a1a'});
+  if(OVER.captain)OVER.harborplate=OVER.captain;})();
 
 
 // =====================================================================
@@ -5588,9 +5635,9 @@ const secName=d=>(STG||STAGES.shore).secName(d);
 const ISKA_W={kind:'sword',name:'潮鳴り',metal:'silver',grip:'dark',trim:'gold',len:11.5,w0:.85,w1:.6,tip:3.2,th:.35,guard:1.6,gripLen:3.2};
 const FIXED={
   harborSword:()=>({id:newId(),type:'weapon',rarity:1,name:'港の古い剣',spec:{kind:'sword',name:'港の古い剣',metal:'iron',grip:'leather',trim:'iron',len:9.5,w0:1.15,w1:.9,tip:2,th:.4,guard:2.4,gripLen:2.6},traits:[{k:'atk',v:6}],lore:'港の倉に残っていた剣。手入れはされていたらしい。'}),
-  fangVest:()=>({id:newId(),type:'armor',rarity:2,kind:'leather',name:'白牙の鋲の胴着',traits:[{k:'def',v:3},{k:'hp',v:12}],lore:'白牙の牙を鋲に打った革の胴着。'}),
+  fangVest:()=>({id:newId(),type:'armor',rarity:2,kind:'brigandine',name:'白牙の鋲の胴着',traits:[{k:'def',v:3},{k:'hp',v:12}],lore:'白牙の牙を鋲に打った革の胴着。'}),
   priestStaff:()=>({id:newId(),type:'weapon',rarity:4,unique:1,name:'不朽の錫杖',spec:Object.assign({},PRIEST_W,{name:'不朽の錫杖'}),traits:[{k:'atk',v:22},{k:'hp',v:20},{k:'def',v:3}],lore:'不朽派の導師の錫杖。結晶の頭は、まだかすかに温かい。'}),
-  tuskVest:()=>({id:newId(),type:'armor',rarity:2,kind:'leather',name:'大牙の胴着',traits:[{k:'def',v:4},{k:'hp',v:16}],lore:'大牙の主の牙を打った革の胴着。'}),
+  tuskVest:()=>({id:newId(),type:'armor',rarity:2,kind:'boarhide',name:'大牙の胴着',traits:[{k:'def',v:4},{k:'hp',v:16}],lore:'大牙の主の牙を打った革の胴着。'}),
   iskaBlade:()=>({id:newId(),type:'weapon',rarity:4,unique:1,name:'潮鳴り',spec:ISKA_W,traits:[{k:'spd',v:18},{k:'crit',v:14},{k:'atk',v:15}],lore:'海の向こうで打たれた細身の刀。振ると、遠い潮の音がする。'})};
 const CAPT_W={kind:'greatsword',name:'封鎖令の大剣',metal:'black',grip:'cloth',trim:'gold',len:15,w0:2.0,w1:1.7,tip:2,th:.5,guard:3.6,gripLen:4.8,fuller:1,guardStyle:'horns'};
 const makeUnique=()=>({id:newId(),type:'weapon',rarity:4,unique:1,name:'封鎖令の大剣',spec:CAPT_W,traits:[{k:'atk',v:25},{k:'crit',v:10},{k:'hp',v:15}],lore:'港を閉ざした隊長の剣。最後まで門を守った重さが残る。'});
@@ -5598,7 +5645,6 @@ const KIND={dagger:{n:'短剣',dmg:7,cd:.36,dur:.26,range:20,arc:1.7,kb:70},swor
   greatsword:{n:'大剣',dmg:21,cd:.92,dur:.62,range:32,arc:2.7,kb:170},spear:{n:'槍',dmg:12,cd:.62,dur:.36,range:40,arc:.3,kb:90},
   axe:{n:'斧',dmg:16,cd:.72,dur:.42,range:26,arc:1.9,kb:130},hammer:{n:'槌',dmg:27,cd:1.08,dur:.68,range:27,arc:2.4,kb:240}};
 const armoryTier=()=>save.flags.grenaDown?7:save.flags.wardenDown?6:save.flags.chiefDown?5:save.flags.priestDown?4:save.flags.iskaDown?3:save.flags.captDown?2:save.flags.forge?1:0;
-const ARMOR={none:{n:'防具なし',def:0,mv:0},cloak:{n:'旅の外套',def:2,mv:.06},leather:{n:'革の胴着',def:4,mv:0},plate:{n:'板金鎧',def:8,mv:-.1}};
 const TRAITS={atk:{n:v=>'攻撃 +'+v+'%',r:[6,16]},spd:{n:v=>'攻撃の速さ +'+v+'%',r:[5,14]},hp:{n:v=>'最大HP +'+v,r:[5,16]},def:{n:v=>'守り +'+v,r:[1,4]},
   move:{n:v=>'足の速さ +'+v+'%',r:[3,9]},leech:{n:v=>'与えた傷の '+v+'% を回復',r:[2,6]},crit:{n:v=>'会心 '+v+'%(2倍の傷)',r:[4,12]}};
 // 漁って見つかる物。w は出やすさ、v は値の幅(売値。安め)
@@ -5626,15 +5672,15 @@ function rollQuest(src,x,y,key,room){for(const id in QUEST){const Q=QUEST[id],t=
     let pr=0;if(src==='box'){pr=Q.box||0;if(Q.th&&!(room&&Q.th.includes(room.th)))pr*=.3;}else pr=(Q.kill&&Q.kill[key])||0;
     if(rnd()<pr)dropItem(x,y,{id:newId(),type:'quest',rarity:3,name:Q.n,ic:Q.ic,task:id});}}
 // 版の番号:ver0.大型.中型.小型(タルコフ式)。完成したら ver1.0.0
-const GAME_V='0.14.0.0';
+const GAME_V='0.14.1.0';
 let uid=1;const newId=()=>Date.now().toString(36)+(uid++);
 function rollRarity(depth,bonus){const w=[82,12+depth*1.5+bonus*8,3+depth*.9+bonus*5,.4+depth*.3+bonus*2];let t=w.reduce((a,b)=>a+b),r=rnd()*t;for(let i=0;i<4;i++){r-=w[i];if(r<=0)return i;}return 0;}
 function rollTraits(n,pool){const out=[],ks=pool.slice();for(let i=0;i<n&&ks.length;i++){const k=ks.splice(rnd()*ks.length|0,1)[0],T=TRAITS[k];out.push({k,v:Math.round(T.r[0]+rnd()*(T.r[1]-T.r[0]))});}return out;}
 function makeWeapon(depth,bonus){const r=rollRarity(depth,bonus);const spec=randomWeapon((rnd()*1e9)|0,armoryTier());
   return {id:newId(),type:'weapon',rarity:r,name:spec.name,spec,traits:rollTraits(r,['atk','spd','crit','leech','hp'])};}
-function makeArmor(depth,bonus){const r=rollRarity(depth,bonus);const kinds=['cloak','cloak','leather','leather','plate'];const k=kinds[rnd()*kinds.length|0];
+function makeArmor(depth,bonus){const r=rollRarity(depth,bonus),tier=armoryTier();const pool=[];for(const k in ARMOR){const A=ARMOR[k];if(k==='none'||A.t>tier)continue;for(let i=0;i<1+A.t;i++)pool.push(k);}const k=pool[rnd()*pool.length|0]||'leather';
   const pre=['繕われた','古い','丈夫な','港の','名のある'][Math.min(4,r+(rnd()<.5?1:0))];
-  return {id:newId(),type:'armor',rarity:r,kind:k,name:pre+ARMOR[k].n,traits:rollTraits(r,['def','hp','move','atk'])};}
+  return {id:newId(),type:'armor',rarity:r,kind:k,name:pre+armorOf(k).n,traits:rollTraits(r,['def','hp','move','atk'])};}
 function makeValuable(dd){const here=(typeof depth==='number'?depth:0);const L=VALUABLES.filter(v=>(!v.min||here>=v.min)&&(!v.st||v.st===curStage));let V;{let t=L.reduce((a,v)=>a+v.w,0)*rnd();for(const v of L){t-=v.w;if(t<=0){V=v;break;}}V=V||L[0];}const r=rollRarity(dd,0);return {id:newId(),type:'valuable',v3:1,rarity:r,name:V.n,ic:V.ic,value:Math.max(1,Math.round((V.v[0]+rnd()*(V.v[1]-V.v[0]))*(1+r*.5)*(1+dd*.06)))};}
 function makeCure(){return {id:newId(),type:'potion',rarity:0,name:'毒消しの葉',pct:.08,cure:1};}
 function makePotion(big){return big?{id:newId(),type:'potion',rarity:1,name:'上等な薬',pct:.45}:{id:newId(),type:'potion',rarity:0,name:'薬草の包み',pct:.2};}
@@ -5645,7 +5691,7 @@ function wstats(it){const K=KIND[it.spec.kind],M=(it.spec.arch&&ARCH[it.spec.arc
   return {dmg:Math.round(dmg),cd:K.cd*(M.cd||1),dur:K.dur*Math.sqrt(M.cd||1),range:K.range+(M.rng||0),arc:K.arc,kb:K.kb,kind:it.spec.kind,crit:(M.crit||0)/100};}
 function itemDesc(it){const L=[];if(it.lore)L.push(it.lore);
   if(it.type==='weapon'){const s=wstats(it);L.push(((it.spec.arch&&ARCH[it.spec.arch]&&it.name!==ARCH[it.spec.arch].n)?ARCH[it.spec.arch].n+'（'+KIND[it.spec.kind].n+'）':KIND[it.spec.kind].n)+' ・ 攻撃 '+s.dmg);}
-  if(it.type==='armor'){const A=ARMOR[it.kind];L.push('守り '+Math.round(A.def*(1+it.rarity*.25))+(A.mv?(' ・ 足の速さ '+(A.mv>0?'+':'')+Math.round(A.mv*100)+'%'):''));}
+  if(it.type==='armor'){const A=armorOf(it.kind);L.push((A.w?A.w+' ・ ':'')+'守り '+Math.round(A.def*(1+it.rarity*.25))+(A.hp?' ・ HP +'+A.hp:'')+(A.mv?(' ・ 足の速さ '+(A.mv>0?'+':'')+Math.round(A.mv*100)+'%'):''));}
   if(it.type==='valuable')L.push('価値 '+it.value);if(it.type==='quest')L.push('仕事の品（「'+(TASKS.find(t=>t.id===it.task)||{name:''}).name+'」）');
   if(it.type==='potion')L.push((it.cure?'毒を消す・':'')+'最大HPの '+Math.round((it.pct||.2)*100)+'% 回復');
   for(const t of it.traits||[])L.push(TRAITS[t.k].n(t.v));return L;}
@@ -5846,8 +5892,8 @@ function newPlayer(){const p={x:0,y:0,r:5,hp:60,max:60,lv:1,xp:0,dir:'down',face
   ups:{},shT:1.5,coins:0,rerolls:1,reso:[],shieldT:0,trailT:0,hasteT:0,bag:save.bag.slice(),eq:{weapon:save.eq.weapon||STARTER(),armor:save.eq.armor}};
   powerBase(p);recalc(p);p.hp=p.max;return p;}
 function recalc(p){const tr=[].concat(p.eq.weapon?p.eq.weapon.traits||[]:[],p.eq.armor?p.eq.armor.traits||[]:[]);const sum=k=>tr.filter(t=>t.k===k).reduce((a,t)=>a+t.v,0);
-  const ak=p.eq.armor?p.eq.armor.kind:'none',A=ARMOR[ak];const old=p.max||60;
-  const st=save.stats;p.max=60+st.vit*6+p.upHp+sum('hp');p.def=Math.round(A.def*(1+(p.eq.armor?p.eq.armor.rarity:0)*.25))+sum('def')+st.def;
+  const ak=p.eq.armor?p.eq.armor.kind:'none',A=ak==='none'?ARMOR.none:armorOf(ak);const old=p.max||60;
+  const st=save.stats;p.max=60+st.vit*6+p.upHp+sum('hp')+(A.hp||0);p.def=Math.round(A.def*(1+(p.eq.armor?p.eq.armor.rarity:0)*.25))+sum('def')+st.def;
   p.spd=64*(1+A.mv+sum('move')/100)*p.upMove;p.critMul=p.critMul||2;p.atkM=(1+sum('atk')/100)*p.upDmg*(1+st.str*.04);p.cdM=p.upCd/(1+sum('spd')/100);p.crit=sum('crit')/100+((p.eq.weapon&&wstats(p.eq.weapon).crit)||0)+(p.critUp||0);p.leech=sum('leech')/100+(p.leechUp||0);
   p.ws=wstats(p.eq.weapon);if(p.hp>p.max)p.hp=p.max;}
 const armorKey=()=>P.eq.armor?P.eq.armor.kind:'none';
@@ -5878,7 +5924,7 @@ function kill(e){e.dead=true;rollQuest('kill',e.x,e.y,e.kind);{const c=e.boss?0:
   if(e.mini){if(boss===e){boss=null;$('boss').classList.add('hide');}tels=tels.filter(t=>t.own!==e);hs=Math.max(hs,.2);shake(6);slow=.5;later.push({t:.5,f:()=>{slow=1;}});runLog.mini=(runLog.mini||0)+1;toast(e.d.n+'を倒した','#ffd27a');
     for(let i=0;i<26;i++){const a=rnd()*6.28,s=30+rnd()*90;parts.push({x:e.x,y:e.y-8,vx:Math.cos(a)*s,vy:Math.sin(a)*s-40,t:0,life:.7+rnd()*.4,col:['#e8fcff','#8fd6f0','#ffd27a','#ffffff'][i%4],g:1});}
     dropItem(e.x,e.y,makeValuable(pw+3));if(rnd()<.5)dropItem(e.x,e.y,makeValuable(pw+2));if(rnd()<.5)dropItem(e.x,e.y,makePotion(true));
-    if(e.kind==='kaza'&&rnd()<.4)dropItem(e.x,e.y,makeWeapon(pw+1,1));if(e.kind==='fang'&&rnd()<.15)dropItem(e.x,e.y,makeArmor(pw+1,1));
+    if(e.kind==='kaza'&&rnd()<.4)dropItem(e.x,e.y,makeWeapon(pw+1,1));if(rnd()<(e.kind==='fang'?.3:.2))dropItem(e.x,e.y,makeArmor(pw+1,1));
     if(e.kind==='kaza')for(let i=0;i<4;i++)picks.push({x:e.x,y:e.y,vx:(rnd()-.5)*110,vy:(rnd()-.5)*110,kind:'coin',v:3+pw,t:0});}countKill(e.elite?'elite':e.kind);if(e.elite)countKill(e.kind);woodKill(e);mineKill(e);if(e.mini&&addCodex(e.kind))later.push({t:1.2,f:()=>toast('記録が増えた','#cfe8ff')});
   if(e.elite)dropItem(e.x,e.y,makeValuable(pw+2));
   if(e.kind==='thief'&&rnd()<.35)picks.push({x:e.x,y:e.y,vx:(rnd()-.5)*70,vy:(rnd()-.5)*70,kind:'coin',v:2+(rnd()*3|0),t:0});
@@ -6113,7 +6159,7 @@ function lootFor(o){const out=[],d=pw;const n=o.type==='chest'?2+(rnd()*2.4|0):r
   for(let i=0;i<n;i++){const r=rnd();
     if(o.type==='sack'){out.push(r<.62?makeValuable(d):r<.86?makePotion():{coin:1+(rnd()*3|0)});continue;}
     if(o.type==='barrel'){out.push(r<.3?makePotion():r<.45?{coin:1+(rnd()*3|0)}:makeValuable(d));continue;}
-    out.push(o.type==='chest'?(r<.45?makeValuable(d):r<.55?makeWeapon(d,bonus):r<.63?makeArmor(d,bonus):r<.8?makePotion():{coin:3+(rnd()*5|0)+d}):(r<.68?makeValuable(d):r<.86?makePotion():{coin:1+(rnd()*3|0)}));}
+    out.push(o.type==='chest'?(r<.42?makeValuable(d):r<.53?makeWeapon(d,bonus):r<.66?makeArmor(d,bonus):r<.8?makePotion():{coin:3+(rnd()*5|0)+d}):(r<.68?makeValuable(d):r<.86?makePotion():{coin:1+(rnd()*3|0)}));}
   return out;}
 function openContainer(o){o.opened=true;for(const t of TASKS)if(t.type==='open'&&taskSt(t.id)==='active'&&t.st===curStage){save.prog[t.id]=Math.min(t.n,(save.prog[t.id]||0)+1);if(save.prog[t.id]>=t.n){save.tasks[t.id]='ready';toast(t.name+' 完了','#ffd27a');}}const L=lootFor(o);rollQuest('box',o.x,o.y-4,o.type,sec.roomAt?sec.roomAt(o.tx,o.ty):null);if(!L.length){toast('空っぽだった','#9aa6cf');}
   for(const it of L){if(it.coin)picks.push({x:o.x,y:o.y-4,vx:(rnd()-.5)*90,vy:30+rnd()*40,kind:'coin',v:it.coin,t:0});else dropItem(o.x,o.y-4,it);}
@@ -6636,21 +6682,21 @@ function checkUnlocks(){for(const t of TASKS)if(t.unlock&&taskSt(t.id)==='locked
 // w:武器の型 / a:防具 / pot:薬。need:{tier,lv,flag}
 const SHOP={
   antique:[{w:'dagger'},{w:'longsword'},{w:'spear'},{a:'cloak'},
-    {w:'falchion',need:{tier:1}},{w:'claymore',need:{tier:1,lv:3}},{a:'leather',need:{tier:1}},
-    {w:'sabre',need:{tier:2}},{w:'rapier',need:{tier:2,lv:8}},{w:'katana',need:{tier:3,flag:'iskaDown'}},{w:'estoc',need:{tier:3,lv:12}},{w:'tempered',need:{tier:4}},{w:'anvilbreaker',need:{tier:4,flag:'grenaDown'}}],
+    {a:'gambeson'},{w:'falchion',need:{tier:1}},{w:'claymore',need:{tier:1,lv:3}},{a:'leather',need:{tier:1}},{a:'hood',need:{tier:1}},{a:'oilcoat',need:{tier:1,lv:4}},{a:'uniform',need:{tier:2}},
+    {w:'sabre',need:{tier:2}},{w:'rapier',need:{tier:2,lv:8}},{w:'katana',need:{tier:3,flag:'iskaDown'}},{a:'vinecape',need:{flag:'priestDown'}},{a:'robe',need:{flag:'priestDown',lv:12}},{a:'apron',need:{flag:'wardenDown'}},{w:'estoc',need:{tier:3,lv:12}},{w:'tempered',need:{tier:4}},{w:'anvilbreaker',need:{tier:4,flag:'grenaDown'}}],
   herb:[{pot:'small',need:{tier:1}},{pot:'big',need:{tier:2}},{pot:'cure',need:{tier:3}}],
   smith:[{w:'handaxe'},{w:'mace'},
-    {w:'bastard',need:{tier:1}},{w:'pike',need:{tier:1}},{a:'plate',need:{tier:1,lv:4}},
+    {w:'bastard',need:{tier:1}},{w:'pike',need:{tier:1}},{a:'chain',need:{tier:1}},{a:'plate',need:{tier:1,lv:4}},{a:'brigandine',need:{tier:2,lv:8}},{a:'harborplate',need:{tier:2,flag:'iskaDown'}},
     {w:'zwei',need:{tier:2}},{w:'bearded',need:{tier:2}},{w:'warhammer',need:{tier:2}},{w:'partisan',need:{tier:2,lv:8}},
     {w:'flamberge',need:{tier:2,lv:10}},{w:'battleaxe',need:{tier:2,lv:12}},{w:'maul',need:{tier:2,lv:12}},
     {w:'machete',need:{flag:'priestDown'}},{w:'obsidian',need:{flag:'priestDown',lv:12}},{w:'crysmace',need:{flag:'chiefDown'}},
-    {w:'forgeaxe',need:{tier:3}},{w:'pickaxe',need:{flag:'wardenDown'}},{w:'slagmaul',need:{flag:'grenaDown',lv:18}}],
+    {w:'forgeaxe',need:{tier:3}},{a:'boarhide',need:{flag:'priestDown'}},{a:'scale',need:{flag:'chiefDown'}},{a:'crystalplate',need:{flag:'chiefDown',lv:16}},{a:'minerhide',need:{flag:'wardenDown'}},{a:'forgeplate',need:{flag:'grenaDown',lv:20}},{w:'pickaxe',need:{flag:'wardenDown'}},{w:'slagmaul',need:{flag:'grenaDown',lv:18}}],
   scholar:[],
 };
 const FLAG_N={iskaDown:'イスカに勝つ',priestDown:'不朽派の導師を倒す',chiefDown:'いま笑う者に勝つ',wardenDown:'昇降機の番人を倒す',grenaDown:'鍛冶の母に勝つ'};
 function baseItem(e){if(e.w){const A=ARCH[e.w],spec=Object.assign({kind:A.k,arch:e.w,metal:'iron',grip:'leather',trim:'iron',th:.4},A.g(mulberry(7)));if(!spec.w1)spec.w1=spec.w0*.85;spec.name=A.n;
     return {id:newId(),type:'weapon',rarity:0,name:A.n,spec,traits:[]};}
-  if(e.a)return {id:newId(),type:'armor',rarity:0,kind:e.a,name:ARMOR[e.a].n,traits:[]};
+  if(e.a)return {id:newId(),type:'armor',rarity:0,kind:e.a,name:armorOf(e.a).n,traits:[]};
   return e.pot==='cure'?makeCure():makePotion(e.pot==='big');}
 function shopLock(who,e){const n=e.need||{},why=[];const tier=save.shops[who]||0;
   if(n.tier&&tier<n.tier){const t=TASKS.find(t=>t.rw.shop&&t.rw.shop[0]===who&&t.rw.shop[1]>=n.tier);why.push(t?'仕事「'+t.name+'」':'信用 '+n.tier);}
@@ -6662,7 +6708,7 @@ const forgeCost=it=>({coins:Math.round(60*Math.pow((it.plus||0)+1,1.6)),shards:0
 const needLv=L=>40+L*30+L*L*3;
 const lvCost=L=>Math.round(80+L*45+L*L*6);
 let campTab='eq';
-const priceOf=it=>it.type==='quest'?0:it.type==='potion'?(it.cure?20:(it.pct||0)>.3?40:15):it.type==='weapon'?Math.round(({greatsword:60,hammer:60,axe:48,dagger:30}[it.spec.kind]||45)*1.4*[1,2.6,6,13,30][it.rarity]*(1+((it.spec.arch&&ARCH[it.spec.arch])?ARCH[it.spec.arch].t:0)*.5)):it.type==='armor'?Math.round(({cloak:40,leather:60,plate:95}[it.kind])*1.4*[1,2.6,6,13,30][it.rarity]):it.value;
+const priceOf=it=>it.type==='quest'?0:it.type==='potion'?(it.cure?20:(it.pct||0)>.3?40:15):it.type==='weapon'?Math.round(({greatsword:60,hammer:60,axe:48,dagger:30}[it.spec.kind]||45)*1.4*[1,2.6,6,13,30][it.rarity]*(1+((it.spec.arch&&ARCH[it.spec.arch])?ARCH[it.spec.arch].t:0)*.5)):it.type==='armor'?Math.round(armorOf(it.kind).pr*1.4*[1,2.6,6,13,30][it.rarity]):it.value;
 const sellOf=it=>it.type==='valuable'?it.value:it.type==='potion'?4:Math.max(2,Math.round(priceOf(it)*.15));
 function camp(){checkUnlocks();state='camp';$('hud').classList.add('hide');P=null;
   if(save.pendingExp){const pe=save.pendingExp;save.pendingExp=null;const gain=pe.base+pe.bonus;let ups=0;save.exp+=gain;
@@ -6829,7 +6875,7 @@ function showBag(sel){const p=P;const swp=bagSwap&&swapK&&!swapK.got?swapK:null;
   $('b-close').onclick=()=>{bagSwap=false;toggleBag();};if(sel)bagPick(sel,true);}
 let bagSwap=false;
 function cmpLine(it){if(!P)return '';if(it.type==='weapon'){const a=wstats(it).dmg,b=wstats(P.eq.weapon).dmg,d=a-b;return `<p class="cmp">攻撃 ${a}　今 ${b}　<b style="color:${d>0?'#8ff0a4':d<0?'#ff8a8a':'#b7bddb'}">${d>0?'▲+'+d:d<0?'▼'+d:'±0'}</b></p>`;}
-  if(it.type==='armor'){const df=x=>x?Math.round(ARMOR[x.kind].def*(1+x.rarity*.25))+((x.traits||[]).filter(t=>t.k==='def').reduce((s,t)=>s+t.v,0)):0;const a=df(it),b=df(P.eq.armor),d=a-b;return `<p class="cmp">守り ${a}　今 ${b}　<b style="color:${d>0?'#8ff0a4':d<0?'#ff8a8a':'#b7bddb'}">${d>0?'▲+'+d:d<0?'▼'+d:'±0'}</b></p>`;}return '';}
+  if(it.type==='armor'){const df=x=>x?Math.round(armorOf(x.kind).def*(1+x.rarity*.25))+((x.traits||[]).filter(t=>t.k==='def').reduce((s,t)=>s+t.v,0)):0;const a=df(it),b=df(P.eq.armor),d=a-b;return `<p class="cmp">守り ${a}　今 ${b}　<b style="color:${d>0?'#8ff0a4':d<0?'#ff8a8a':'#b7bddb'}">${d>0?'▲+'+d:d<0?'▼'+d:'±0'}</b></p>`;}return '';}
 function bagPick(id,noRe){const p=P,it=p.bag.find(i=>i.id===id);if(!it)return;if(!noRe){showBag(id);return;}const acts=[];
   if(it.type==='weapon')acts.push(['equip','持ち替える']);if(it.type==='armor')acts.push(['equip','着る']);if(it.type==='potion')acts.push(['use','使う']);acts.push(['drop','捨てる']);
   $('bagDetail').innerHTML=itemCard(it,'')+cmpLine(it)+`<div class="acts big2">${acts.map(([k,n])=>`<button class="btn${k==='drop'?' ghost':''}" data-a="${k}">${n}</button>`).join('')}</div>`;paintIcons($('bagDetail'),[it]);
@@ -6861,7 +6907,7 @@ window.__g={get P(){return P;},get enemies(){return enemies;},get state(){return
 
 </script>
 <script>if('serviceWorker' in navigator&&location.protocol==='https:'&&window.top===window){addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>{r.update();}).catch(()=>{}));
-navigator.serviceWorker&&navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!window.__reloaded){window.__reloaded=1;}});}</script><script>window.BUILD_V='202611231110';
+navigator.serviceWorker&&navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!window.__reloaded){window.__reloaded=1;}});}</script><script>window.BUILD_V='202611241533';
 // 新しい版を探す:開いたとき・前に戻ってきたとき。タイトルか宿営地にいれば、そのまま読み込み直す
 let __pendingUpd=false;function __chkUpd(){if(location.protocol!=='https:')return;fetch('version.json?'+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{if(j&&j.v&&j.v!==window.BUILD_V){let done='';try{done=localStorage.getItem('rr_upd')||'';}catch(e){}if(done!==j.v){__pendingUpd=j.v;__tryUpd();}}}).catch(()=>{});}
 function __tryUpd(){if(!__pendingUpd)return;try{if(typeof state!=='undefined'&&(state==='title'||state==='camp')){try{localStorage.setItem('rr_upd',__pendingUpd);}catch(e){}__pendingUpd=false;location.reload();}}catch(e){}}
