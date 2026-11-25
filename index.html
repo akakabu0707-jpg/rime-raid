@@ -19,9 +19,13 @@ button{font-family:inherit;color:#e8eef8;cursor:pointer}button:disabled{opacity:
 #h-q{position:fixed;left:8px;right:90px;top:calc(env(safe-area-inset-top) + 64px);font-size:11px;color:#cfd8ec;pointer-events:none;text-shadow:0 1px 0 #000}#h-q b{color:#ffd27a}
 #h-warn{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top) + 86px);text-align:center;font-size:11px;color:#ff8a8a;pointer-events:none}
 #b-menu{position:fixed;right:8px;top:calc(env(safe-area-inset-top) + 6px);font-size:13px;padding:8px 10px}
-#b-guard{position:fixed;right:22px;bottom:calc(env(safe-area-inset-bottom) + 28px);width:72px;height:72px;border-radius:50%;font-size:15px;border-color:#7a6ac0;--cd:0;background:conic-gradient(rgba(0,0,0,.6) calc(var(--cd)*360deg),#1c1f34 0)}
-#b-guard.on{border-color:#ffffff;box-shadow:0 0 12px #c8a8ff}
-#b-talk{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 40px);font-size:14px;padding:10px 16px;border-color:#f2c440}
+#slots{position:fixed;right:12px;bottom:calc(env(safe-area-inset-bottom) + 20px);display:flex;flex-direction:column;gap:10px;align-items:flex-end}
+.slot{position:relative;width:62px;height:62px;border-radius:50%;border:3px solid #3a3f5c;background:radial-gradient(circle at 35% 30%,var(--c1,#3a3f5c) 0,var(--c2,#1c1f34) 55%,#0a0b14 100%);color:#fff;font-size:13px;padding:0;box-shadow:0 0 0 2px #0a0b14,0 3px 0 #05060c;--cd:0;text-shadow:0 1px 1px #000,0 0 4px #000}
+.slot::after{content:'';position:absolute;inset:-3px;border-radius:50%;background:conic-gradient(rgba(0,0,0,.65) calc(var(--cd)*360deg),transparent 0);pointer-events:none}
+.slot b{display:block;line-height:1}.slot i{font-style:normal;font-size:10px;color:#f2c440;display:block}
+.slot.on{border-color:#f2c440;box-shadow:0 0 12px var(--c1),0 0 0 2px #0a0b14}.slot.grd{border-style:double;border-width:4px;border-color:#8a93c8;width:56px;height:56px}.slot.grd.guarding{border-color:#fff;box-shadow:0 0 14px #c8a8ff}
+.slot.empty{background:#10121f;color:#4a4f70;width:44px;height:44px}.slot.bad{opacity:.5}
+#b-talk{position:fixed;left:50%;transform:translateX(-60%);bottom:calc(env(safe-area-inset-bottom) + 40px);font-size:14px;padding:10px 16px;border-color:#f2c440}
 #boss{position:fixed;left:16px;right:16px;top:calc(env(safe-area-inset-top) + 104px);text-align:center;font-size:12px;color:#ffc0b0;pointer-events:none}#boss .bar{height:6px}#bossbar{background:#e05a4a}
 #toasts{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom) + 120px);text-align:center;font-size:12px;pointer-events:none;text-shadow:0 1px 0 #000,0 0 4px #000;line-height:1.7}
 #dlg{position:fixed;left:8px;right:8px;bottom:calc(env(safe-area-inset-bottom) + 10px);padding:10px 12px;min-height:110px}
@@ -35,7 +39,8 @@ button{font-family:inherit;color:#e8eef8;cursor:pointer}button:disabled{opacity:
 .buy{font-size:13px;padding:6px 10px;margin-top:4px}.chip{font-size:12px;padding:5px 8px;background:#1c1f34;border:2px solid #3a3f5c}.chip.mode{color:#f2c440;border-color:#5a4a20;background:#1a1810}
 .mbar{height:12px;background:#0a0b14;border:1px solid #3a3f5c;position:relative;margin-top:4px}.mbar div{position:absolute;left:0;top:0;bottom:0;background:#5a4a9a}.mbar span{position:relative;font-size:9px;padding-left:4px}
 .wbar{position:relative;height:16px;margin:6px 0;background:#0a0b14;border:2px solid #3a3f5c}.wfill{position:absolute;left:0;top:0;bottom:0;background:#4a5aa0}.wfill.bad{background:#a83a3a}.wbar span{position:relative;font-size:10px;padding-left:5px;line-height:16px}
-.m-staff{display:flex;gap:8px}.staffwrap{position:relative;width:120px;flex:none;height:300px}#staffcv{width:120px;height:300px;image-rendering:pixelated}
+.m-staff{display:flex;gap:8px}.staffwrap{position:relative;width:128px;flex:none;height:340px}#staffcv{width:128px;height:340px;image-rendering:pixelated}
+.grp{border-top:1px solid #2a2e48;margin-top:6px;padding-top:2px}.srow.sub{margin-left:6px;font-size:12px}.sock.link{width:26px;height:26px;margin:2px}
 .sock{position:absolute;width:30px;height:30px;border-radius:50%;font-size:9px;padding:0;background:radial-gradient(circle at 35% 35%,#2a2e48,#0a0b14);border:2px solid var(--c);box-shadow:0 0 0 2px #0a0b14,inset 0 0 6px #000;color:#cfd8ec}
 .sock.full{background:radial-gradient(circle at 35% 35%,#ffffff 0,var(--c) 30%,#1a1030 90%);color:#fff;text-shadow:0 1px 1px #000;box-shadow:0 0 10px var(--c),0 0 0 2px #0a0b14}
 .sock.grd{border-style:dashed}
@@ -57,7 +62,7 @@ button{font-family:inherit;color:#e8eef8;cursor:pointer}button:disabled{opacity:
 <div id="hud"><div id="h-area"></div><div class="bar"><div id="hpbar"></div><span id="hptx"></span></div><div class="bar" style="height:4px"><div id="expbar"></div></div><div id="h-lv"></div><div id="h-gem"></div></div>
 <div id="h-q"></div><div id="h-warn"></div>
 <button class="pf" id="b-menu">杖と魔術</button>
-<button class="pf hide" id="b-guard">守</button>
+<div id="slots"></div>
 <button class="pf hide" id="b-talk">話す</button>
 <div id="boss" class="hide"><div id="bossn"></div><div class="bar"><div id="bossbar"></div></div></div>
 <div id="toasts"></div>
@@ -1017,8 +1022,52 @@ SP.update=function(Wd,dt){const out=[];
 SP.castRoot=function(Wd,n,x,y,ang,anchor,src,twin){if(twin){SP.cast(Wd,n,x,y,ang-.16,0,anchor,null,src);SP.cast(Wd,n,x,y,ang+.16,0,anchor,null,src);}else SP.cast(Wd,n,x,y,ang,0,anchor,null,src);};
 SP.counter=function(Wd,n,x,y,ang,src){for(const l of n.links)if(l.m==='counter')SP.cast(Wd,l.n,x,y,ang,1,null,'counter',src);};
 
+
+// =====================================================================
+//  弾幕:ボスが撃つ弾と光線。主人公の当たりは小さい(避けゲー)
+// =====================================================================
+const BH={b:[],l:[]};
+const BCOL={arcane:['#ffffff','#c8a8ff','#6a3ad0'],frost:['#ffffff','#a8e8ff','#3f7ac8'],stone:['#f0e8d8','#a89a88','#4a4038'],lightning:['#ffffff','#fff07a','#c89010'],dark:['#f0d0ff','#b060ff','#3a0a5a'],fire:['#fff4c0','#ffa040','#c0401a']};
+// 1発。o:{spd,acc,spin,r,dmg,el,kind,life,home,grow,delay}
+BH.shot=function(x,y,a,o){if(BH.b.length>700)return;const s=o.spd||70;BH.b.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,acc:o.acc||0,spin:o.spin||0,r:o.r||3,dmg:o.dmg||8,el:o.el||'arcane',kind:o.kind||'orb',life:o.life||6,home:o.home||0,t:0,delay:o.delay||0,spawn:o.spawn,owner:o.owner,stop:o.stop,then:o.then});};
+BH.ring=function(x,y,n,off,o){for(let i=0;i<n;i++){if(o.gap!=null){const k=((i/n)+1)%1;if(Math.abs(((k-o.gap+1.5)%1)-.5)<(o.gw||.08))continue;}BH.shot(x,y,off+i*Math.PI*2/n,o);}};
+BH.fan=function(x,y,a,n,spread,o){for(let i=0;i<n;i++)BH.shot(x,y,a+(n>1?(i/(n-1)-.5)*spread:0),o);};
+// 光線:warn 秒は予告だけ、そのあと dur 秒当たる。va は回る速さ
+BH.laser=function(x,y,a,o){BH.l.push({x,y,a,va:o.va||0,len:o.len||260,w:o.w||5,warn:o.warn||.7,dur:o.dur||.8,t:0,dmg:o.dmg||12,el:o.el||'arcane',own:o.own,hitCd:0});};
+BH.clear=function(){BH.b.length=0;BH.l.length=0;};
+BH.update=function(G,dt){const P=G.P,px=P.x,py=P.y-8,keep=[];
+  for(const q of BH.b){q.t+=dt;if(q.delay>0){q.delay-=dt;keep.push(q);continue;}q.life-=dt;
+    if(q.spin){const a=Math.atan2(q.vy,q.vx)+q.spin*dt,s=Math.hypot(q.vx,q.vy);q.vx=Math.cos(a)*s;q.vy=Math.sin(a)*s;}
+    if(q.acc){const s=Math.hypot(q.vx,q.vy),n=Math.max(0,s+q.acc*dt);if(s>0){q.vx*=n/s;q.vy*=n/s;}}
+    if(q.home&&!P.dead){const a=Math.atan2(py-q.y,px-q.x),c=Math.atan2(q.vy,q.vx);let d=a-c;while(d>Math.PI)d-=Math.PI*2;while(d<-Math.PI)d+=Math.PI*2;const na=c+Math.max(-q.home*dt,Math.min(q.home*dt,d)),s=Math.hypot(q.vx,q.vy);q.vx=Math.cos(na)*s;q.vy=Math.sin(na)*s;}
+    if(q.stop&&q.t>q.stop&&!q.stopped){q.stopped=1;q.vx*=.02;q.vy*=.02;}
+    q.x+=q.vx*dt;q.y+=q.vy*dt;
+    if(q.then&&q.t>q.then.at&&!q.fired){q.fired=1;q.then.f(q);if(q.then.die){continue;}}
+    if(q.life<=0||G.solidB(q.x,q.y))continue;
+    if(!P.dead&&Math.hypot(q.x-px,q.y-py)<q.r+3){const ok=G.hurt(q.dmg,{x:q.owner?q.owner.x:q.x,y:q.owner?q.owner.y:q.y,proj:1,owner:q.owner,bullet:1});if(ok===false)continue;}
+    keep.push(q);}
+  BH.b=keep;
+  const kl=[];for(const L of BH.l){L.t+=dt;L.a+=L.va*dt*(L.t>L.warn?1:.35);if(L.own){L.x=L.own.x;L.y=L.own.y-10;}
+    if(L.t>L.warn&&!P.dead){L.hitCd-=dt;const ax=Math.cos(L.a),ay=Math.sin(L.a),rx=px-L.x,ry=py-L.y,al=rx*ax+ry*ay,pe=Math.abs(-rx*ay+ry*ax);if(al>0&&al<L.len&&pe<L.w/2+3&&L.hitCd<=0){L.hitCd=.4;G.hurt(L.dmg,{x:L.x,y:L.y+10,owner:L.own,laser:1});}}
+    if(L.t<L.warn+L.dur&&!(L.own&&L.own.dead))kl.push(L);}
+  BH.l=kl;};
+// 主人公の魔剣で弾を斬る
+BH.cut=function(x,y,r){let n=0;BH.b=BH.b.filter(q=>{if(Math.hypot(q.x-x,q.y-y)<r+q.r){n++;return false;}return true;});return n;};
+BH.draw=function(cx,ox,oy,T){for(const q of BH.b){const C=BCOL[q.el]||BCOL.arcane,x=Math.round(q.x-ox),y=Math.round(q.y-oy);if(q.delay>0){cx.globalAlpha=.35;cx.fillStyle=C[1];cx.fillRect(x-1,y-1,3,3);cx.globalAlpha=1;continue;}
+    const r=Math.round(q.r);
+    if(q.kind==='shard'){const a=Math.atan2(q.vy,q.vx);for(let i=-r-1;i<=r+1;i++){cx.fillStyle=i>r-1?C[0]:C[1];cx.fillRect(Math.round(x+Math.cos(a)*i),Math.round(y+Math.sin(a)*i),1,1);}cx.fillStyle=C[2];cx.fillRect(Math.round(x-Math.cos(a)*(r+2)),Math.round(y-Math.sin(a)*(r+2)),1,1);}
+    else if(q.kind==='rock'){cx.fillStyle='#14100c';cx.fillRect(x-r-1,y-r,r*2+3,r*2+1);cx.fillRect(x-r,y-r-1,r*2+1,r*2+3);cx.fillStyle=C[2];cx.fillRect(x-r,y-r,r*2+1,r*2+1);cx.fillStyle=C[1];cx.fillRect(x-r,y-r,r*2,r);cx.fillStyle=C[0];cx.fillRect(x-r+1,y-r,1,1);}
+    else if(q.kind==='star'){cx.fillStyle=C[2];cx.fillRect(x-r-1,y,r*2+3,1);cx.fillRect(x,y-r-1,1,r*2+3);cx.fillStyle=C[1];cx.fillRect(x-r,y,r*2+1,1);cx.fillRect(x,y-r,1,r*2+1);cx.fillStyle=C[0];cx.fillRect(x,y,1,1);}
+    else{cx.fillStyle=C[2];cx.beginPath();cx.arc(x+.5,y+.5,r+1,0,6.28);cx.fill();cx.fillStyle=C[1];cx.beginPath();cx.arc(x+.5,y+.5,r,0,6.28);cx.fill();cx.fillStyle=C[0];cx.fillRect(x-Math.floor(r/2),y-Math.floor(r/2),Math.max(1,r-1),Math.max(1,r-1));}}
+  for(const L of BH.l){const C=BCOL[L.el]||BCOL.arcane,x=L.x-ox,y=L.y-oy;cx.save();cx.translate(Math.round(x),Math.round(y));cx.rotate(L.a);
+    if(L.t<L.warn){const k=L.t/L.warn;cx.globalAlpha=.25+.35*k*(.6+.4*Math.sin(T*30));cx.fillStyle='#ff3b4a';cx.fillRect(0,-.5,L.len,1);cx.globalAlpha=.12;cx.fillRect(0,-L.w/2,L.len,L.w);}
+    else{const k=1-Math.min(1,(L.t-L.warn)/L.dur),w=Math.max(1,Math.round(L.w*(.6+.4*k)));cx.globalAlpha=1;cx.fillStyle=C[2];cx.fillRect(0,-w/2-1,L.len,w+2);cx.fillStyle=C[1];cx.fillRect(0,-w/2,L.len,w);cx.fillStyle=C[0];cx.fillRect(0,-Math.max(.5,w/4),L.len,Math.max(1,w/2));}
+    cx.restore();cx.globalAlpha=1;}};
+BH.lights=function(L){let i=0;for(const q of BH.b){if((i++)%3)continue;L(q.x,q.y,12,BCOL[q.el]?({arcane:'170,120,255',frost:'140,210,255',stone:'200,180,150',lightning:'255,240,140',dark:'180,90,255',fire:'255,140,50'})[q.el]:'200,200,255',.45);}
+  for(const Ln of BH.l){if(Ln.t<Ln.warn)continue;for(let s=0;s<Ln.len;s+=40)L(Ln.x+Math.cos(Ln.a)*s,Ln.y+Math.sin(Ln.a)*s,24,({arcane:'170,120,255',frost:'140,210,255',lightning:'255,240,140',dark:'180,90,255'})[Ln.el]||'255,255,255',.5);}};
+
 // 自動生成(maps.py)
-const MAPS={"academy": {"n": "星見の学院", "base": ",", "dark": 0.35, "rows": ["########################", "#TT,,,,##########,,,,TT#", "#T,,l,,##########,,l,,T#", "#,,,,,,####oo####,,,,,,#", "#,,####,,,,oo,,,,####,,#", "#,,####,,,,oo,,,,####,,#", "#,,,S,,,,L,oo,,P,,,,,,,#", "#,,,,,,,,,,oo,,,,,,,,,,#", "#,ooooooooooooooooooooo#", "#,o,,,,,,,,,,,,,,,,,,o,#", "#,o,,TT,,~~~~,,,TT,,,o,#", "#,o,,TT,,~ff~,,,TT,,,o,#", "#,o,,,,,,~~~~,,,,,,,,o,#", "#,o,,,,,,,,,,,,V,,,,,o,#", "#,ooooooooooooooooooooo#", "#,,,,,,,,,,oo,,,,,,,,,,#", "#,D,,,D,,,,oo,,,,,TT,,,#", "#,,,,,,,,,,oo,,,,,TT,,,#", "#,,,D,,,,,,oo,,,,,,,,,,#", "#,,,,,,,,,,oo,,,,,,k,,,#", "#TT,,,,,,,,@o,,,,,,,,TT#", "###########11###########"]}, "hill": {"n": "霧の丘", "base": ",", "dark": 0.5, "rows": ["TTTTTTTTTTTTT11TTTTTTTTTTTTTTT", "TTTTTTT,,,,,,::,,,,,TTTTTTTTTT", "TTTT,,,,,,,,,::,,,,,,,,TTTTTTT", "TTT,,,,s,,,,,::,,,,,,,,,,TTTTT", "TT,,,,,,,,,,::,,,,,,,s,,,,TTTT", "TT,,TT,,,,,,::,,,,,,,,,,,,,TTT", "TT,,TT,,,,,::,,,,,TT,,,,,,,TTT", "TTT,,,,,,,::,,,,,,TT,,,,,,,,TT", "TTTT,,,,,::,,,,,,,,,,,w,,,,,TT", "TTTTTT,,::,,,,,,,,,,,,,,,,,TTT", "TTTTTT,::,,,~~~~,,,,,,,,,TTTTT", "TTTTT,,::,,~~~~~~,,,,,,,TTTTTT", "TTTT,,,,::,,~~~~,,,,,m,,,TTTTT", "TTT,,s,,,::,,,,,,,,,,,,,,,TTTT", "TTT,,,,,,,::::::::::,,,,,,,TTT", "TTTT,,,,,,,,,,,,,,::,,,,,,,TTT", "TTTTTTT,,,,,TT,,,,,::,,,w,,,TT", "TTTTTTTT,,,,TT,,,,,,::,,,,,,,2", "TTTTTTTTT,,,,,,,,s,,,::::::::2", "TTTTTTTT,,,,,,,,,,,,,,,,,,,TTT", "TTTTTTT,,,,w,,,,,,,,TT,,,,,TTT", "TTTTTT,,,,,,,,,,,,,,TT,,,,TTTT", "TTTTTT,,m,,,,,,,c,,,,,,,,TTTTT", "TTTTTTT,,,,,,,TTTTT,,,,,TTTTTT", "TTTTTTTTT,,,TTTTTTTT,,,TTTTTTT", "TTTTTTTTT,,,TTTTTTTTT,,TTTTTTT", "TTTTTTTT,,,,,TTTTTTT,,,,TTTTTT", "TTTTTTT,,,s,,,,TTTT,,,,,,TTTTT", "TTTTTTT,,,,,,,,,,,,,,,w,,TTTTT", "TTTTTTTT,,,,,,,,,,,,,,,,TTTTTT", "TTTTTTTTTT,,,,,m,,,,,,TTTTTTTT", "TTTTTTTTTTTT,,,,,,,,TTTTTTTTTT", "TTTTTTTTTTTTTT33TTTTTTTTTTTTTT"]}, "tower": {"n": "古い鐘楼", "base": "o", "dark": 0.62, "rows": ["######################", "#oooooooooooooooooooo#", "#oo##oooooooooooo##oo#", "#oo##oooooooooooo##oo#", "#ooooooooooBooooooooo#", "#oooooooooooooooooooo#", "#oo##oooooooooooo##oo#", "#oo##oooooooooooo##oo#", "#ooooooooo,,ooooooooo#", "#########oooo#########", "#########oooo#########", "#ooooooo##oo##ooooooo#", "#ooiooooooooooooooioo#", "#oooooooooggoooooooo##", "#ooo##oooooooooo##ooo#", "#ooo##oooooooooo##ooo#", "#ooooooooiooiooooooco#", "#######oooooooo#######", "#######oooooooo#######", "#oooooooooooooooooooo#", "#ocoo##ooowoooo##oooo#", "#oooo##oooooooo##oooo#", "#ooooooiooooooooooioo#", "#oooooooooogoooooooo##", "#oooo##oooooooo##oooo#", "#oooo##oooooooo##oooo#", "#ooooooooooooooooooo##", "#########oooo#########", "#ooooooooooooooooooo##", "#oowooooooooooooowooo#", "#oooo##oooooooo##oooo#", "#oooo##ooooiooo##oooo#", "#ooooooooooooooooooo##", "#oooooooo@ooooooooooo#", "#########2222#########"]}, "duel": {"n": "決闘場", "base": "o", "dark": 0.4, "rows": ["################", "#==============#", "#=l==========l=#", "#==============#", "#=====R========#", "#==============#", "#==============#", "#==============#", "#==============#", "#==============#", "#==============#", "#=======@======#", "#=l==========l=#", "################"]}};
+const MAPS={"academy": {"n": "星見の学院", "base": ",", "dark": 0.35, "rows": ["########################", "#TT,,,,##########,,,,TT#", "#T,,l,,##########,,l,,T#", "#,,,,,,####oo####,,,,,,#", "#,,####,,,,oo,,,,####,,#", "#,,####,,,,oo,,,,####,,#", "#,,,S,,,,L,oo,,P,,E,,,,#", "#,,,,,,,,,,oo,,,,,,,,,,#", "#,ooooooooooooooooooooo#", "#,o,,,,,,,,,,,,,,,,,,o,#", "#,o,,TT,,~~~~,,,TT,,,o,#", "#,o,,TT,,~ff~,,,TT,,,o,#", "#,o,,,,,,~~~~,,,,,,,,o,#", "#,o,,N,,,,,,,,,V,,Y,,o,#", "#,ooooooooooooooooooooo#", "#,,,,,,,,,,oo,,,,,,,,,,#", "#,D,,,D,,,,oo,,,,,TT,,,#", "#,,,,,,,,,,oo,,,,,TT,,,#", "#,,,D,,,,,,oo,,,,,,,,,,#", "#,,,,,,,,,,oo,*,,,,k,,,#", "#TT,,,,,,,,@o,,,,,,,,TT#", "###########11###########"]}, "hill": {"n": "霧の丘", "base": ",", "dark": 0.5, "rows": ["TTTTTTTTTTTTT11TTTTTTTTTTTTTTT", "TTTTTTT,,,,,,::,,,,,TTTTTTTTTT", "TTTT,,,,,,,,,::,,,,,,,,TTTTTTT", "TTT,,,,s,,,,,::,,,,,,,,,,TTTTT", "TT,,,,,,,,,,::,,,,,,,s,,,,TTTT", "TT,,TT,,,,,,::,,,,,,,,,,,,,TTT", "TT,,TT,,,,,::,,,,,TT,,,,,,,TTT", "TTT,,,,,,,::,,,,,,TT,,,,,,,,TT", "TTTT,,,,,::,,,,,,,,,,,w,,,,,TT", "TTTTTT,,::,,,,,,,,,,,,,,,,,TTT", "TTTTTT,::,,,~~~~,,,,,,,,,TTTTT", "TTTTT,,::,,~~~~~~,,,,,,,TTTTTT", "TTTT,,,,::,,~~~~,,*,,m,,,TTTTT", "TTT,,s,,,::,,,,,,,,,,,,,,,TTTT", "TTT,,,,,,,::::::::::,,,,,,,TTT", "TTTT,,,,,,,,,,,,,,::,,,,,,,TTT", "TTTTTTT,,,,,TT,,,,,::,,,w,,,TT", "TTTTTTTT,,,,TT,,,,,,::,,,,,,,2", "TTTTTTTTT,,,,,,,,s,,,::::::::2", "TTTTTTTT,,,,,,,,,,,,,,,,,,,TTT", "TTTTTTT,,,,w,,,,,,,,TT,,,,,TTT", "TTTTTT,,,,,,,,,,,,,,TT,,,,TTTT", "TTTTTT,,m,,,,,,,c,,,,,,,,TTTTT", "TTTTTTT,,,,,,,TTTTT,,,,,TTTTTT", "TTTTTTTTT,,,TTTTTTTT,,,TTTTTTT", "TTTTTTTTT,,,TTTTTTTTT,,TTTTTTT", "TTTTTTTT,,,,,TTTTTTT,,,,TTTTTT", "TTTTTTT,,,s,,,,TTTT,,,,,,TTTTT", "TTTTTTT,,,,,,,,,,,,,,,w,,TTTTT", "TTTTTTTT,,,,,,,,,,,,,,,,TTTTTT", "TTTTTTTTTT,,,,,m,,,,,,TTTTTTTT", "TTTTTTTTTTTT,,,,,,,,TTTTTTTTTT", "TTTTTTTTTTTTTT33TTTTTTTTTTTTTT"]}, "tower": {"n": "古い鐘楼", "base": "o", "dark": 0.62, "rows": ["######################", "#oooooooooooooooooooo#", "#oo##oooooooooooo##oo#", "#oo##oooooooooooo##oo#", "#ooooooooooBooooooooo#", "#oooooooooooooooooooo#", "#oo##oooooooooooo##oo#", "#oo##oooooooooooo##oo#", "#ooooooooo,*ooooooooo#", "#########oooo#########", "#########oooo#########", "#ooooooo##oo##ooooooo#", "#ooiooooooooooooooioo#", "#oooooooooggoooooooo##", "#ooo##oooooooooo##ooo#", "#ooo##oooooooooo##ooo#", "#ooooooooiooiooooooco#", "#######oooooooo#######", "#######oooooooo#######", "#oooooooooooooooooooo#", "#ocoo##ooowoooo##oooo#", "#oooo##oooooooo##oooo#", "#ooooooiooooooooooioo#", "#oooooooooogoooooooo##", "#oooo##oooooooo##oooo#", "#oooo##oooooooo##oooo#", "#ooooooooooooooooooo##", "#########oooo#########", "#ooooooooooooooooooo##", "#oowooooooooooooowooo#", "#oooo##oooooooo##oooo#", "#oooo##ooooiooo##oooo#", "#ooooooooooooooooooo##", "#oooooooo@oo*oooooooo#", "#########2222#########"]}, "duel": {"n": "決闘場", "base": "o", "dark": 0.4, "rows": ["################", "#==============#", "#=l==========l=#", "#==============#", "#==============#", "#==============#", "#=====R========#", "#==============#", "#==============#", "#==============#", "#==============#", "#=======@======#", "#=l==========l=#", "################"]}};
 
 
 // =====================================================================
@@ -1030,47 +1079,13 @@ OVER.prof=OVER.robe;RECOLOR.prof=Object.assign({},RECOLOR.robe,{o:'#2a1a4a',W:'#
 OVER.rival=OVER.robe;RECOLOR.rival=Object.assign({},RECOLOR.robe,{o:'#3a1010',W:'#7a2a2a',Z:'#b04a3a',q:'#c8a040',Q:'#f2d070'});
 OVER.librarian=OVER.gambeson;RECOLOR.librarian=Object.assign({},RECOLOR.gambeson,{a:'#3a4a3a',A:'#5a7a5a',z:'#8aa88a',w:'#3a4a3a',W:'#5a7a5a',Z:'#8aa88a'});
 OVER.smith=OVER.apron;RECOLOR.smith=Object.assign({},RECOLOR.apron,{r:'#3a5a8a',R:'#5a8ac0'});
-const PEOPLE={
-  prof:{n:'マルグリット教授',look:'prof',idle:['魔術は綴るもの。ひとつ覚えたら、次はそれをどう結ぶかを考えなさい。','焦らないこと。霧は、急ぐ者から呑みます。']},
-  lib:{n:'書庫番 オーウェン',look:'librarian',idle:['書庫には、まだ君には読めない本がたくさんある。読めるようになる日を楽しみにしていなさい。','黒い背表紙の棚には、近づかないように。'],shop:'spells'},
-  smith:{n:'杖職人 ベルナ',look:'smith',idle:['杖は手の延長だよ。穴が多けりゃいいってもんじゃない。','いい杖ってのは、持ち主が育ててくもんさ。'],shop:'staffs'},
-  rival:{n:'同級生 リオ',look:'rival',idle:['君も新入生？　わたしはリオ。入学前から魔術の練習してたんだ。','試験で当たったら、負けないからね。'],after:['次は負けない。……でも、君の結び方、ちょっと面白かった。']},
-};
-// 課題:offer 受ける前の話 / done 果たしたときの話
-const QUESTS={
-  q_intro:{who:'prof',name:'最初の課題',desc:'演習場のかかしに魔術を20回当てる',type:'dummy',n:20,rw:{exp:30,gems:15},open:['q_slime'],
-    offer:['ようこそ、星見の学院へ。私はマルグリット。君たち新入生の担当です。','今の君に使えるのは、魔力弾ひとつ。それで良いのです。どんな大魔術も、最初の一発から始まる。','まずは演習場のかかしで、撃つ感覚をつかみなさい。近くに立てば、杖が勝手に狙ってくれます。'],
-    done:['よろしい。杖が手に馴染んできたようね。','学院の外、南の霧の丘には魔物が出ます。……次は、本物を相手にしてもらいます。']},
-  q_slime:{who:'prof',name:'霧の粘体',desc:'学院の南、霧の丘で粘体を10体倒す',type:'kill',kinds:['slime','mslime'],n:10,rw:{exp:60,gems:20,spell:'homing'},open:['q_wisp','q_guard','q_mush'],
-    offer:['ここ数年、霧が濃くなっています。霧の中から、粘体が湧き出してくる。','南門から出た先が霧の丘。粘体を10体、鎮めてきなさい。','倒すと分かれるものもいます。慌てずに。'],
-    done:['無事に戻りましたね。','褒美に「追尾弾」を教えましょう。狙いがそれても、弾が敵を追いかける。……書庫番のオーウェンが、君に話があるそうですよ。']},
-  q_guard:{who:'lib',name:'守りの基礎',desc:'受け流しで、攻撃を3回受け流す（守りのボタン）',type:'parry',n:3,rw:{exp:50,gems:10,spell:'barrier'},open:[],
-    offer:['やあ、新入生。書庫番のオーウェンだ。','攻めの魔術ばかり覚えたがる生徒は多いが、生き残るのは守りを知る者だよ。','「受け流し」を教えよう。攻撃が当たる、その瞬間に唱えるんだ。早すぎても遅すぎても、ただ当たる。','実戦で3回、受け流してごらん。'],
-    accept:{spell:'parry'},
-    done:['見事。怖かったろう？　でも、それが守りの本質だ。','次は「魔力障壁」。しばらくのあいだ攻撃を受け止める。……杖に穴が増えたら、障壁に攻めの魔術を結んでごらん。受け止めた瞬間に、撃ち返せる。']},
-  q_wisp:{who:'prof',name:'鬼火を鎮める',desc:'霧の丘の鬼火を6体倒す',type:'kill',kinds:['wisp'],n:6,rw:{exp:80,gems:25,spell:'scatter'},open:['q_exam'],
-    offer:['霧の丘に、鬼火が出るようになりました。魔力弾を撃ってくる、厄介な相手です。','撃たれたら、オーウェンに習った受け流しを試してみなさい。6体、鎮めてきて。'],
-    done:['鬼火の弾は、君の魔力弾とよく似ていたでしょう？　魔物は、魔術を真似るのです。','「拡散弾」を授けます。……さて、そろそろ昇級試験の時期ね。']},
-  q_mush:{who:'lib',name:'胞子の標本',desc:'霧の丘の胞子茸を5体倒す',type:'kill',kinds:['mush'],n:5,rw:{exp:60,gems:45},open:[],
-    offer:['霧の丘の胞子茸は、霧を吸って育つ。標本が欲しいんだ。5体、頼めるかい？','胞子は吸わないように。足を止めずに離れるといい。'],
-    done:['ありがとう。……やはり、胞子に霧の成分が混じっている。霧は、どこから来るんだろうね。','礼の魔晶だ。書庫で魔術を学ぶのに使うといい。']},
-  q_exam:{who:'prof',name:'昇級試験',desc:'決闘場で同級生リオに勝つ',type:'exam',rw:{exp:120,gems:30,rank:'D',staff:'oak'},open:['q_tower','q_imp'],
-    offer:['昇級試験です。相手は同級生のリオ。','彼女は入学前から独学で魔術を学んできた。君の知らない魔術も使うでしょう。','知らない魔術は、怖い。でも、よく見なさい。見た魔術は、いつか君のものになる。準備ができたら、また声をかけて。'],
-    done:['おめでとう。今日から君はランクDです。','ランクDの生徒には、穴が二つある杖が許されます。……二つの魔術を結ぶ。ここからが、綴り手の本当の始まりですよ。','杖職人のベルナから、樫の杖を受け取りなさい。書庫にも、新しく読める本が増えているはずです。']},
-  q_imp:{who:'smith',name:'小悪魔の角',desc:'古い鐘楼の小悪魔を8体倒す',type:'kill',kinds:['imp'],n:8,rw:{exp:120,gems:80},open:[],
-    offer:['ランクDおめでとう。杖職人のベルナだよ。','鐘楼に小悪魔が棲みついてさ。あいつらの角は、杖の飾りにちょうどいいんだ。8体、頼めるかい。','火の玉を撃ってくるから気をつけな。……あんたにはまだ使えない魔術だね。'],
-    done:['いい角だ。礼だよ。','ところで、あの火の玉。ランクCになったら書庫で教えてもらえるはずさ。']},
-  q_tower:{who:'prof',name:'鐘楼の異変',desc:'古い鐘楼の最上階で、ガーゴイルを鎮める',type:'boss',flag:'gargDown',rw:{exp:300,gems:100,spell:'nova',staff:'warden'},open:[],
-    offer:['霧の丘の東に、古い鐘楼があります。学院を守るために置かれた、石のガーゴイルがいる。','そのガーゴイルが、霧を浴びて暴れだした。……鎮めてきなさい。','気をつけて。あれは、私たちが教えていない魔術を使う。'],
-    done:['……雷の鎖を使った？　そう。やはり霧は、魔術そのものを運んでいる。','君は今日、学院を守りました。「星爆」を授けます。ベルナには、守り手の杖を用意させておきました。','霧の丘の南は、まだ霧が深すぎて進めません。霧が晴れたら……次の課題を出します。'],epilogue:1},
-};
-// 杖:atk 攻めの穴 / grd 守りの穴
+// 杖:slots 魔術の枠ごとに結べる数(1 = 結べない)
 const STAFFS={
-  novice:{n:'見習いの杖',d:'入学のときに配られる杖',atk:1,grd:1,cap:0,cast:1,head:'#a070ff',wood:'#6a4428',shape:'plain'},
-  oak:{n:'二股の樫杖',d:'攻めの穴が二つ。二つの魔術を結べる',atk:2,grd:1,cap:1,cast:1,head:'#d8c070',wood:'#8a6040',shape:'fork',req:{rank:'D',reward:1}},
-  swift:{n:'早詠みの小枝',d:'攻めの穴が二つ。詠唱が速いが、理解 -1',atk:2,grd:1,cap:-1,cast:.82,head:'#6fe8c8',wood:'#a88a5a',shape:'thin',req:{rank:'D',cost:140}},
-  warden:{n:'守り手の杖',d:'守りの穴が二つ。障壁や受け流しに、攻めの魔術を結べる',atk:2,grd:2,cap:0,cast:1.05,head:'#8fd6f0',wood:'#4a4a5a',shape:'ward',req:{rank:'D',reward:1}},
-  ember:{n:'炎晶の杖',d:'炎の魔術の傷 1.3倍',atk:3,grd:1,cap:1,cast:1,head:'#ff7a2a',wood:'#5a2a1a',shape:'fork',req:{rank:'C',cost:300}},
+  novice:{n:'見習いの杖',d:'入学のときに配られる杖。枠が二つ',slots:[1,1],cap:0,cast:1,head:'#a070ff',wood:'#6a4428',shape:'plain'},
+  oak:{n:'二股の樫杖',d:'枠が二つ。一つ目の枠で、二つの魔術を結べる',slots:[2,1],cap:1,cast:1,head:'#d8c070',wood:'#8a6040',shape:'fork',req:{rank:'D',reward:1}},
+  swift:{n:'早詠みの小枝',d:'枠が三つ。結べないが、詠唱が速い',slots:[1,1,1],cap:-1,cast:.82,head:'#6fe8c8',wood:'#a88a5a',shape:'thin',req:{rank:'D',cost:140}},
+  warden:{n:'守り手の杖',d:'枠が二つ。どちらの枠でも二つ結べる',slots:[2,2],cap:0,cast:1.05,head:'#8fd6f0',wood:'#4a4a5a',shape:'ward',req:{rank:'D',reward:1}},
+  ember:{n:'炎晶の杖',d:'枠が三つ。炎の魔術の傷 1.3倍',slots:[2,2,1],cap:1,cast:1,head:'#ff7a2a',wood:'#5a2a1a',shape:'fork',req:{rank:'C',cost:300}},
 };
 // 星図:中心から四つの枝。小さい星と、大きな星(名のある星)
 const TREE=(()=>{const N=[{id:0,x:0,y:0,n:'学徒の心',d:'星図の始まり',fx:{},big:1,adj:[]}];
@@ -1092,6 +1107,49 @@ const mastLv=n=>{let l=1;for(let i=1;i<MAST.length;i++)if(n>=MAST[i])l=i+1;retur
 
 
 // =====================================================================
+//  人と課題(お話)。新入生なので、頼みごとはだいたい同級生と先輩から
+// =====================================================================
+OVER.noel=OVER.hood;RECOLOR.noel=Object.assign({},RECOLOR.hood,{o:'#2a3a2a',a:'#4a6a4a',t:'#6a9a6a',m:'#c8b088',M:'#e8d8b0'});
+OVER.yugo=OVER.oilcoat;RECOLOR.yugo=Object.assign({},RECOLOR.oilcoat,{a:'#2a2a4a',A:'#3a4a8a',z:'#6a7ac0',w:'#2a2a4a',W:'#3a4a8a',Z:'#6a7ac0',n:'#c8a040'});
+OVER.sera=OVER.robe;RECOLOR.sera=Object.assign({},RECOLOR.robe,{o:'#1a2a3a',W:'#2a4a6a',Z:'#5a8ab0',q:'#c8c8d8',Q:'#ffffff'});
+const PEOPLE={
+  prof:{n:'担任 マルグリット先生',look:'prof',idle:['魔術は綴るもの。ひとつ覚えたら、次はそれをどう結ぶかを考えなさい。','焦らないこと。霧は、急ぐ者から呑みます。','……三年前の春も、霧が濃かったわね。']},
+  lib:{n:'書庫番 オーウェン',look:'librarian',idle:['書庫には、まだ君には読めない本がたくさんある。','黒い背表紙の棚には近づかないように。……三年前、それで一人いなくなった。'],shop:'spells'},
+  smith:{n:'杖職人 ベルナ',look:'smith',idle:['杖は手の延長だよ。枠が多けりゃいいってもんじゃない。','枠が増えりゃ、使い分けの幅も増える。持て余さないことだね。'],shop:'staffs'},
+  rival:{n:'同級生 リオ',look:'rival',idle:['君も新入生？　わたしはリオ。入学前から魔術の練習してたんだ。','試験で当たったら、負けないからね。'],after:['次は負けない。……でも、君の結び方、ちょっと面白かった。','先生の試験の「型」、どこで覚えたんだろ。あれ、生徒には組めないはずなんだけど。']},
+  noel:{n:'同級生 ノエル',look:'noel',idle:['あ、えっと……ノエルです。薬草学が好きで……。','霧の丘の霧、去年より濃いって、上級生が言ってた……。']},
+  yugo:{n:'同級生 ユーゴ',look:'yugo',idle:['よう！　ユーゴだ。学院の七不思議、全部確かめるのが目標なんだ。','鐘楼の守り石は、夜になると鳴くんだってさ。'],after:['……助けてくれてありがとな。あのひび、中から燃えてたんだ。黒い火でさ。','七不思議の八個目、見つけちまったかもしれねえ。']},
+  sera:{n:'二年 セラ先輩',look:'sera',idle:['新入生ね。図書委員のセラよ。','攻めばかり覚える子は、だいたい一年で辞めるわ。','……アルトは、黒い背表紙の本を開いたの。それきり。']},
+};
+const QUESTS={
+  q_intro:{who:'prof',name:'最初の課題',desc:'演習場のかかしに魔術を20回当てる',type:'dummy',n:20,rw:{exp:30,gems:15},open:['q_noel','q_rio'],
+    offer:['ようこそ、星見の学院へ。君たちの担任、マルグリットです。','今の君に使えるのは魔力弾ひとつ。それで良いのです。どんな大魔術も、最初の一発から始まる。','まずは演習場のかかしで、撃つ感覚をつかみなさい。近くに立てば、杖が勝手に狙ってくれます。'],
+    done:['よろしい。杖が手に馴染んできたようね。','南門の先は霧の丘。……同級生たちと仲良くなさい。霧の中で頼れるのは、結局ひとですから。']},
+  q_noel:{who:'noel',name:'ノエルの薬草摘み',desc:'霧の丘で粘体を10体倒す',type:'kill',kinds:['slime','mslime'],n:10,rw:{exp:60,gems:15,spell:'homing'},open:['q_sera','q_yugo'],
+    offer:['あ、あの……霧の丘で薬草を摘みたいんだけど、粘体がいっぱいで……。','わたし、魔術を撃つと目をつぶっちゃって……。','10体くらい減らしてくれたら……お礼に、ノートを見せてあげる。追尾弾の術式、きれいに写してあるの。'],
+    done:['ありがとう……！　薬草、たくさん摘めた。','約束のノート。追尾弾は、目をつぶっても当たるの。……わたし向きでしょ？','それと、セラ先輩が新入生を探してたよ。書庫の前にいると思う。']},
+  q_sera:{who:'sera',name:'守りの基礎',desc:'受け流しで、攻撃を3回受け流す（受け流しを枠に入れ、当たる瞬間に押す）',type:'parry',n:3,rw:{exp:50,gems:10,spell:'barrier'},open:[],accept:{spell:'parry'},
+    offer:['あなたが噂の新入生ね。二年のセラよ。','攻めばかり覚える子は、霧の中で一年ももたない。……三年前に、私の同期がそうだった。','「受け流し」を教えるわ。杖の枠に入れておいて、攻撃が当たるその瞬間に唱えるの。早すぎても遅すぎても、ただ当たる。','実戦で3回。できたら、もう一つ教えてあげる。'],
+    done:['……本当にやったのね。','「魔力障壁」も覚えなさい。結べる枠のある杖を手に入れたら、障壁に攻めの魔術を結んでごらん。受け止めた瞬間に撃ち返せる。','……アルトも、守りを覚えていれば。ううん、何でもない。']},
+  q_rio:{who:'rival',name:'鬼火の数比べ',desc:'霧の丘の鬼火を6体倒す（リオと競争）',type:'kill',kinds:['wisp'],n:6,rw:{exp:80,gems:25,spell:'scatter'},open:['q_exam'],
+    offer:['ねえ、勝負しない？　霧の丘の鬼火、どっちが先に6体倒せるか。','負けた方が……そうだな、自分の得意な術式を相手に教える。どう？'],
+    done:['……え、もう？　わたしまだ4体なんだけど。','しょうがないなあ。約束だから、拡散弾の術式、教えてあげる。近くで撃つと強いんだよ。','先生が言ってた。そろそろ昇級試験だって。……相手、たぶんわたしだよ。']},
+  q_yugo:{who:'yugo',name:'七不思議その三',desc:'霧の丘の胞子茸を5体倒す',type:'kill',kinds:['mush'],n:5,rw:{exp:60,gems:40},open:[],
+    offer:['よう、新入り同士よろしくな！　ユーゴだ。','学院七不思議その三、「霧を吸って光る茸」。胞子茸ってやつが怪しいと思うんだよ。','5体ぶん、調べてきてくれ！　礼はする！'],
+    done:['光った？　光ったか！？　……光らなかったか。','でも胞子に、霧の粒が混じってたってノエルが言ってた。霧って、なんなんだろうな。','礼の魔晶だ。……次は鐘楼の守り石だな。夜に鳴くって噂なんだ。']},
+  q_exam:{who:'prof',name:'昇級試験',desc:'決闘場で同級生リオに勝つ',type:'exam',rw:{exp:120,gems:30,rank:'D',staff:'oak'},open:['q_tower'],
+    offer:['昇級試験です。相手は同級生のリオ。','試験の間だけ、彼女には私の「型」を貸してあります。生徒には組めない術式です。……試験は、知らない魔術と出会う場でもあるの。','よく見て、よく避けなさい。準備ができたら、また声をかけて。'],
+    done:['おめでとう。今日から君はランクDです。','ランクDの生徒には、結べる枠のある杖が許されます。……攻めを結ぶか、守りに結ぶか。ここからが綴り手の本当の始まりですよ。','杖職人のベルナから、樫の杖を受け取りなさい。']},
+  q_tower:{who:'noel',name:'鐘楼の守り石',desc:'古い鐘楼の最上階へ行き、ユーゴを連れ戻す',type:'boss',flag:'gargDown',rw:{exp:300,gems:100,spell:'nova',staff:'warden'},open:['q_imp'],
+    offer:['た、大変……！　ユーゴが、昨日の夜から戻ってないの。','「守り石が鳴くか確かめてくる」って、鐘楼に……。','先生に言ったら、ユーゴが退学になっちゃうかもしれない……お願い、連れ戻して……！'],
+    done:['ユーゴ……！　よかった……。','……先生には、全部話したの。怒られたけど、「よく友達を助けた」って。','先生から、これを預かってる。「星爆」の術式と、ベルナさんの守り手の杖。','あのね……ガーゴイルのひび、中から黒く焦げてたって。……黒い炎って、書庫の、あの棚の……。'],epilogue:1},
+  q_imp:{who:'yugo',name:'お守りの角',desc:'古い鐘楼の小悪魔を8体倒す',type:'kill',kinds:['imp'],n:8,rw:{exp:120,gems:80},open:[],
+    offer:['……命の恩人に、頼みごとってのも何だけどさ。','鐘楼の小悪魔の角で、ノエルにお守りを作ってやりたいんだ。心配かけたから。8体ぶん、頼めるか？'],
+    done:['ありがとな。……ノエル、泣いて喜んでたよ。','あの火の玉、ランクCになったら書庫で教わるらしいぜ。']},
+};
+
+
+// =====================================================================
 //  魔物:絵・強さ・動き。魔術を使う魔物は、主人公と同じ SP.cast で唱える
 // =====================================================================
 function s2x(rows){const h=rows.length,w=Math.max(...rows.map(r=>r.length)),at=(x,y)=>(x<0||y<0||x>=w||y>=h)?'.':(rows[y][x]||'.'),out=[];
@@ -1106,9 +1164,10 @@ const MUSH=["...rRRRRr...","..rRwRRRwRr.",".rRRRRRRRRr.","rRwRRRwRRRRr","rrrrrrr
 const MUSH_PAL={r:'#6a2a3a',R:'#b04a5a',w:'#f0e0d0',W:'#d8c8b0',k:'#2a1a1a'};
 const IMP_F=[["w..........w","ww..rRRr..ww","wWw.rKRKr.wW","wWWrRRRRrWWw",".wWrRrrRrWw.","...rRRRRr...","...r.rr.r...","..r......r.."],["............","....rRRr....","w..rKRKr...w","wWwrRRRRrwWw","wWWrRrrRrWWw",".ww.rRRr.ww.","...r.rr.r...","..r......r.."]];
 const IMP_PAL={r:'#5a1a1a',R:'#c03a2a',K:'#ffd27a',w:'#3a1010',W:'#7a2a2a'};
-const GARG=["......dd....dd......",".....dMd....dMd.....","....dMMd....dMMd....","..ddMMMMddddMMMMdd..",".dMMMMMMMMMMMMMMMMd.","dMMmMMMKMMMMKMMMmMMd","dMmMMMMMMMMMMMMMMmMd","dmMMMMMMMggMMMMMMMmd",".dMMMMMMMMMMMMMMMMd.","..dMMmMMMMMMMMmMMd..","...dMMMMMMMMMMMMd...","...dMd.dMMMMd.dMd...","...dd...dMMd...dd...","........dddd........"];
-const GARG_PAL={d:'#24222a',M:'#6a6676',m:'#8a8696',K:'#ff5a4a',g:'#3a3644'};
-const GARG_PAL2=Object.assign({},GARG_PAL,{K:'#fff07a',m:'#a8a4b8'});
+const GARG=["........h..........h........", "w........h........h........w", "wb.......hh......hh.......bw", "wWb.......h......h.......bWw", "wWWb......hdd..ddh......bWWw", "wWWWb....dMMMmmMMMd....bWWWw", "wWWwWb...dMKMmmcKMd...bWwWWw", "wWWwWWb..dMMttttMMd..bWWwWWw", "wWwWWWWbdMMMdttdMMMdbWWWWwWw", "wWwWWwWdMMmMMMMMcmMMdWwWWwWw", "wwWWwWdMmMMMMMMMccMmMdWwWWww", "w.wWwWdMMmMMMmmMMcmMMdWwWw.w", "w.wwWwdMdMMMMMMMcMMdMdwWww.w", "...wwwdMddMmMMMMmcddMdwww...", "....w.dMd.dMMMMMcd.dMd.w....", "......dMd.dMMMMcMd.dMd......", ".....dMMd.dMMddMMd.dMMd.....", ".....dmMd.dMMddMMd.dMmd.....", ".....tdtd.dMMddMMd.dtdt.....", "..........dMd..dMd..........", ".........dMMd..dMMd.........", "........ddddd..ddddd........"];
+const GARG_PAL={w:'#241c2c',W:'#3a3046',b:'#7a7088',h:'#3a3440',d:'#0e0c12',M:'#56525e',m:'#76727e',K:'#ff3a2a',t:'#d8d0c0',c:'#9040e0'};
+const GARG_PAL2=Object.assign({},GARG_PAL,{K:'#fff07a',c:'#ff60ff',W:'#4a3058'});
+const GARG_SLEEP=Object.assign({},GARG_PAL,{K:'#2e2a34',c:'#3a3440'});
 const GARG_BIG=s2x(GARG);
 const DUMMY=["...wWWWWw...","..wWRRRRWw..","..WRrWWrRW..","..WRWRRWRW..","..WRrWWrRW..","..wWRRRRWw..","...wWWWWw...","vvvvvVVvvvvv","....vVVv....",".....VV.....",".....VV.....","....vVVv....","...ssSSss..."];
 const DUMMY_PAL={W:'#d8c080',w:'#9a8450',R:'#c0303a',r:'#7a1c26',V:'#8a6040',v:'#5a3a24',S:'#6a6478',s:'#3e3a4a'};
@@ -1122,7 +1181,7 @@ const MON={
   imp:{n:'小悪魔',hp:34,r:5,spd:48,dmg:8,xp:6,gem:2,ai:'caster',fly:1,spell:'fireball',keep:70,cd:2.3},
   statue:{n:'石像鬼の像',hp:320,r:9,spd:44,dmg:12,xp:30,gem:8,ai:'statue',mini:1},
   dummy:{n:'かかし',hp:300,r:7,spd:0,dmg:0,xp:0,gem:0,ai:'none'},
-  garg:{n:'鐘楼のガーゴイル',hp:1150,r:13,spd:46,dmg:14,xp:200,gem:60,ai:'garg',boss:1},
+  garg:{n:'守り石のガーゴイル',hp:1050,r:13,spd:46,dmg:14,xp:200,gem:60,ai:'garg',boss:1},
   rival:{n:'同級生 リオ',hp:480,r:5,spd:62,dmg:8,xp:80,gem:0,ai:'rival',boss:1},
 };
 function mkMon(kind,x,y,alv){const D=MON[kind],m=1+(alv-1)*.18;return {kind,D,x,y,hx:x,hy:y,r:D.r,hp:Math.round(D.hp*m),max:Math.round(D.hp*m),dmg:D.dmg*(1+(alv-1)*.12),spd:D.spd,
@@ -1156,57 +1215,63 @@ function statueAI(G,e,dt,d,a,tl){const p=G.P;
       if(d<40&&r<.45){e.st='stomp';e.t=.75;tl({type:'circ',r:34,t:.75,dur:.75});}
       else if(r<.75){e.st='dwind';e.t=.6;e.dir=a;tl({type:'line',x:e.x,y:e.y-4,a,len:120,w:14,t:.6,dur:.6,fixed:1});}
       else{e.st='cast';e.t=.5;tl({type:'line',x:e.x,y:e.y-6,a:angTo(e,p),len:120,w:4,t:.5,dur:.5,fixed:1});}}}
-  else if(e.st==='stomp'){e.t-=dt;if(e.t<=0){if(d<34+p.r)G.hurt(e.dmg*1.3,e);G.fx({t:'ring',x:e.x,y:e.y,r:34,el:'stone'});G.shake(4);e.st='rec';e.t=.7;e.cd=1;}}
+  else if(e.st==='stomp'){e.t-=dt;if(e.t<=0){if(d<34+p.r)G.hurt(e.dmg*1.3,e);G.fx({t:'ring',x:e.x,y:e.y,r:34,el:'stone'});G.shake(4);BH.ring(e.x,e.y-6,12,Math.random()*6,{spd:55,kind:'rock',el:'stone',r:2,dmg:e.dmg*.6,owner:e,life:2.4});e.st='rec';e.t=.7;e.cd=1;}}
   else if(e.st==='dwind'){e.t-=dt;if(e.t<=0){e.st='dash';e.t=.4;e.hit=0;}}
   else if(e.st==='dash'){e.t-=dt;G.move(e,Math.cos(e.dir)*240*dt,Math.sin(e.dir)*240*dt);if(!e.hit&&d<e.r+p.r+3){e.hit=1;G.hurt(e.dmg*1.2,e);}if(e.t<=0){e.st='rec';e.t=.7;e.cd=1;}}
   else if(e.st==='cast'){e.t-=dt;if(e.t<=0){monCast(G,e,'stone',angTo(e,p),e.dmg/8*.8);e.st='rec';e.t=.5;e.cd=1.2;}}
   else{e.t-=dt;if(e.t<=0)e.st='move';}}
-// ---- 鐘楼のガーゴイル ----
-const GARG_SAY={intro:['……鐘を、鳴らすな','石像が、翼を広げた'],ph2:'ガーゴイルの目が黄色く光った。雷の匂いがする',end:'ガーゴイルは崩れ、ただの石に戻った'};
-function gargAI(G,e,dt,d,a,tl){const p=G.P,ph2=e.hp<e.max*.5,wm=ph2?.75:.9;
-  if(e.st==='intro'){if(!e.said){e.said=1;G.toast(GARG_SAY.intro[0],'#ffc0b0');G.later(1.4,()=>G.toast(GARG_SAY.intro[1],'#ff9a8a'));}e.t-=dt;if(e.t<=0){e.st='move';e.t=.6;G.setBoss(e);}return;}
-  if(ph2&&!e.ph2){e.ph2=1;G.tels=G.tels.filter(t=>t.own!==e);G.toast(GARG_SAY.ph2,'#fff07a');e.st='roar';e.t=1.2;e.flash=.3;G.shake(6);for(let i=0;i<2;i++)G.spawnNear('imp',e);return;}
-  switch(e.st){
-  case 'move':e.t-=dt;G.chase(e,dt,e.spd,d>60?a:a+Math.PI/2*e.sd);
-    if(e.t<=0){const L=ph2?['dive','chain','rain','fan','chain','gust']:['dive','fan','rain','dive','gust'];const k=L[e.pi++%L.length];
-      if(k==='dive'){e.st='dwind';e.t=.75*wm;e.dir=a;tl({type:'line',x:e.x,y:e.y-6,a,len:170,w:22,t:e.t,dur:e.t,fixed:1});}
-      else if(k==='fan'){e.st='fan';e.n=ph2?3:2;e.t=.5*wm;tl({type:'line',x:e.x,y:e.y-8,a:angTo(e,p),len:130,w:6,t:e.t,dur:e.t,fixed:1});}
-      else if(k==='rain'){const n=ph2?7:5;for(let i=0;i<n;i++){const r=i?20+Math.random()*50:0,b=Math.random()*6.28,x=p.x+Math.cos(b)*r,y=p.y+Math.sin(b)*r,tt=(.9+i*.09)*wm;tl({type:'circ',x,y,r:13,t:tt,dur:tt,at:1});
-          G.later(tt,()=>{if(Math.hypot(G.P.x-x,G.P.y-y)<13+G.P.r)G.hurt(e.dmg,{x,y});G.fx({t:'ring',x,y,r:13,el:'stone'});for(let j=0;j<5;j++)G.part(x,y,'#a8a090');});}e.st='rec';e.t=1.1;}
-      else if(k==='gust'){e.st='gust';e.t=.7*wm;tl({type:'circ',r:52,t:e.t,dur:e.t});}
-      else{e.st='cwind';e.t=.6*wm;tl({type:'circ',x:p.x,y:p.y,r:16,t:e.t,dur:e.t,at:1});}}
-    break;
-  case 'dwind':e.t-=dt;e.lift=Math.min(12,(e.lift||0)+dt*30);if(e.t<=0){e.st='dash';e.t=.5;e.hit=0;}break;
-  case 'dash':e.t-=dt;G.move(e,Math.cos(e.dir)*280*dt,Math.sin(e.dir)*280*dt);if(!e.hit&&d<e.r+p.r+4){e.hit=1;G.hurt(e.dmg*1.4,e);}if(e.t<=0){e.lift=0;e.st='rec';e.t=.8;G.shake(3);G.fx({t:'ring',x:e.x,y:e.y,r:24,el:'stone'});}break;
-  case 'fan':e.t-=dt;if(e.t<=0){monCast(G,e,'stone',angTo(e,p),e.dmg/8);e.n--;if(e.n>0){e.t=.38*wm;tl({type:'line',x:e.x,y:e.y-8,a:angTo(e,p),len:130,w:6,t:e.t,dur:e.t,fixed:1});}else{e.st='rec';e.t=.6;}}break;
-  case 'gust':e.t-=dt;if(e.t<=0){if(d<52+p.r){G.hurt(e.dmg*.8,e);p.kx=(p.kx||0)+Math.cos(a)*240;p.ky=(p.ky||0)+Math.sin(a)*240;}G.fx({t:'ring',x:e.x,y:e.y,r:52,el:'stone'});G.shake(4);e.st='rec';e.t=.7;}break;
-  case 'cwind':e.t-=dt;if(e.t<=0){monCast(G,e,'chain',angTo(e,p),e.dmg/11*1.1);e.st='rec';e.t=.6;if(!G.save.seen.chain){G.save.seen.chain=1;G.toast('見たことのない魔術だ……雷の鎖？','#fff07a');}}break;
-  case 'roar':case 'rec':e.t-=dt;if(e.t<=0){e.st='move';e.t=.5*wm;}break;}
-  if(d<e.r+p.r&&e.st!=='dash'){if(!(e.tcd>0)){e.tcd=.8;G.hurt(e.dmg*.5,e);}}e.tcd=(e.tcd||0)-dt;}
-// ---- 昇級試験:同級生リオ ----
-const RIVAL_SAY={intro:['リオ「試験だからって、手加減はしないよ」','リオ「入学前から練習してた魔術、見せてあげる」'],ice:'リオ「氷の礫。まだ習ってないでしょ？」',ph2:'リオ「……やるじゃん。本気出す」',end:['リオ「……参った。君の勝ち」','リオ「次は負けないからね」']};
+// =====================================================================
+//  ボス:弾幕の型を順に撃つ。e.pat 今の型 / e.pt 型の経過 / e.pc 数え
+// =====================================================================
+function bossRun(G,e,dt,list,PAT){const p=G.P;e.pt+=dt;const P=PAT[e.pat];
+  if(!P||e.pt>=P.dur){if(P&&P.end)P.end(G,e);const L=list();e.pat=L[e.pi++%L.length];e.pt=0;e.pc=0;e.pv={};if(PAT[e.pat].start)PAT[e.pat].start(G,e);return;}
+  P.step(G,e,dt,p);}
+const every=(e,iv,f)=>{e.pc+=0;const n=Math.floor(e.pt/iv);if(n>(e.pv.n==null?-1:e.pv.n)){e.pv.n=n;f(n);}};
+const tgtA=(e,p)=>Math.atan2(p.y-8-(e.y-10),p.x-e.x);
+function moveTo(G,e,dt,tx,ty,sp){const d=Math.hypot(tx-e.x,ty-e.y);if(d>2)G.move(e,(tx-e.x)/d*Math.min(sp*dt,d),(ty-e.y)/d*Math.min(sp*dt,d));}
+// ---- 鐘楼のガーゴイル(事故で目覚めた学院の守り石) ----
+const GARG_SAY={intro:['鐘楼の天辺に、ユーゴがうずくまっている','守り石のガーゴイルが、ひびから黒い炎を噴いた'],ph2:'ひびが裂けた。黒い炎が、雷に変わる',end:'ガーゴイルは崩れ落ち、ひびの奥の黒い炎だけが、しばらく燃え残った'};
+const GPAT={
+  rain:{dur:3.4,step(G,e,dt,p){moveTo(G,e,dt,p.x,p.y-60,30);every(e,1.05,n=>{if(n>2)return;for(let i=0;i<7;i++){const r=i?18+Math.random()*60:0,b=Math.random()*6.28,x=p.x+Math.cos(b)*r,y=p.y+Math.sin(b)*r;G.tels.push({type:'circ',x,y,r:12,t:.9,dur:.9,at:1,own:e});
+      G.later(.9,()=>{if(e.dead)return;G.fx({t:'ring',x,y,r:12,el:'stone'});BH.ring(x,y,5,Math.random()*6,{spd:55,kind:'rock',el:'stone',r:2,dmg:e.dmg*.7,owner:e,life:2});});}});}},
+  dive:{dur:2.6,start(G,e){e.dir=tgtA(e,G.P);G.tels.push({type:'line',x:e.x,y:e.y-6,a:e.dir,len:200,w:22,t:.8,dur:.8,fixed:1,own:e});},
+    step(G,e,dt,p){if(e.pt<.8){e.lift=Math.min(14,(e.lift||0)+dt*30);return;}if(e.pt<1.3){G.move(e,Math.cos(e.dir)*300*dt,Math.sin(e.dir)*300*dt);every(e,.05,()=>{const a=e.dir+Math.PI/2;for(const s of [-1,1])BH.shot(e.x,e.y-6,a+(s<0?Math.PI:0),{spd:28,acc:30,kind:'rock',el:'stone',r:2,dmg:e.dmg*.6,owner:e,delay:.35,life:3});});
+      if(Math.hypot(p.x-e.x,p.y-e.y)<e.r+p.r+4&&!e.hitD){e.hitD=1;G.hurt(e.dmg*1.3,e);}}else{e.lift=Math.max(0,(e.lift||0)-dt*40);e.hitD=0;}}},
+  wings:{dur:3,step(G,e,dt,p){every(e,.55,n=>{if(n>3)return;BH.ring(e.x,e.y-10,24,n*.13,{spd:62,kind:'rock',el:'stone',r:2,dmg:e.dmg*.7,owner:e,gap:Math.random(),gw:.07,life:5});G.shake(2);});}},
+  screech:{dur:3,step(G,e,dt,p){every(e,.09,n=>{const a=n*.31;for(let k=0;k<3;k++)BH.shot(e.x,e.y-10,a+k*2.094,{spd:58,kind:'orb',el:'dark',r:2,dmg:e.dmg*.6,owner:e,life:5});});}},
+  gaze:{dur:3,start(G,e){const a=tgtA(e,G.P);for(const k of [-1,0,1])BH.laser(e.x,e.y-10,a+k*.75,{va:k===0?.35:-k*.45,len:280,w:6,warn:.85,dur:1.6,dmg:e.dmg*1.1,el:'lightning',own:e});},step(G,e,dt,p){}},
+  orbs:{dur:4,start(G,e){e.orbs=[];for(let i=0;i<3;i++){const a=tgtA(e,G.P)+(i-1)*.9;BH.shot(e.x,e.y-10,a,{spd:34,kind:'orb',el:'lightning',r:5,dmg:e.dmg,owner:e,life:4,home:.6});e.orbs.push(BH.b[BH.b.length-1]);}},
+    step(G,e,dt,p){every(e,.7,n=>{if(!n)return;for(const o of e.orbs)if(o&&o.life>0&&BH.b.includes(o))BH.ring(o.x,o.y,6,n*.4,{spd:60,kind:'star',el:'lightning',r:2,dmg:e.dmg*.6,owner:e,life:3});});}},
+};
+function gargAI(G,e,dt,d,a,tl){const p=G.P,ph2=e.hp<e.max*.5;
+  if(e.st==='intro'){if(!e.said){e.said=1;G.toast(GARG_SAY.intro[0],'#ffc0b0');G.later(1.6,()=>G.toast(GARG_SAY.intro[1],'#d080ff'));}e.t-=dt;if(e.t<=-1){e.st='fight';e.pat=null;e.pt=0;G.setBoss(e);}return;}
+  if(ph2&&!e.ph2){e.ph2=1;BH.clear();G.tels=G.tels.filter(t=>t.own!==e);G.toast(GARG_SAY.ph2,'#ff80ff');G.shake(7);e.pat=null;e.pt=0;e.pi=0;e.flash=.3;if(!G.save.seen.chain){G.save.seen.chain=1;G.later(1.2,()=>G.toast('雷が鎖のように跳ねている……見たことのない魔術だ','#fff07a'));}}
+  bossRun(G,e,dt,()=>ph2?['gaze','rain','orbs','wings','dive','screech','gaze','orbs']:['wings','rain','dive','screech','wings','dive'],GPAT);
+  if(d<e.r+p.r&&!(e.tcd>0)){e.tcd=.8;G.hurt(e.dmg*.5,e);}e.tcd=(e.tcd||0)-dt;}
+// ---- 昇級試験:同級生リオ(試験のために教授が許した術式を使う) ----
+const RIVAL_SAY={intro:['リオ「試験だからって、手加減はしないよ」','リオ「先生が、試験の間だけって“型”を貸してくれたんだ。……見てて」'],ph2:'リオ「……やるじゃん。じゃあ、これも」',end:['リオ「……参った。君の勝ち」','リオ「次は負けないからね」']};
+const RPAT={
+  fan:{dur:2.6,step(G,e,dt,p){moveTo(G,e,dt,e.hx+Math.sin(e.pt*1.4)*50,e.hy,60);every(e,.8,n=>{if(n>2)return;BH.fan(e.x,e.y-10,tgtA(e,p),7,1,{spd:82,el:'arcane',r:2,dmg:e.dmg,owner:e,life:4});});}},
+  icering:{dur:3,step(G,e,dt,p){every(e,.45,n=>{BH.ring(e.x,e.y-10,14,n*.21,{spd:66,kind:'shard',el:'frost',r:2,dmg:e.dmg,owner:e,life:5});});if(!G.save.seen.shards){G.save.seen.shards=1;G.toast('氷の礫……まだ習っていない魔術だ','#a8e8ff');}}},
+  spiral:{dur:3.6,step(G,e,dt,p){every(e,.075,n=>{const a=n*.23;BH.shot(e.x,e.y-10,a,{spd:62,el:'arcane',r:2,dmg:e.dmg*.8,owner:e,life:5});BH.shot(e.x,e.y-10,a+Math.PI,{spd:62,el:'frost',kind:'shard',r:2,dmg:e.dmg*.8,owner:e,life:5});});}},
+  icicle:{dur:3.4,step(G,e,dt,p){every(e,1.05,n=>{if(n>2)return;for(let i=0;i<5;i++){const r=i?20+Math.random()*50:0,b=Math.random()*6.28,x=p.x+Math.cos(b)*r,y=p.y+Math.sin(b)*r;G.tels.push({type:'circ',x,y,r:11,t:.9,dur:.9,at:1,own:e});
+      G.later(.9,()=>{if(e.dead)return;G.fx({t:'ring',x,y,r:11,el:'frost'});BH.ring(x,y,6,Math.random()*6,{spd:52,kind:'shard',el:'frost',r:2,dmg:e.dmg*.8,owner:e,life:2});});}});}},
+  dash:{dur:.7,start(G,e){const a=Math.random()*6.28;e.tx=e.hx+Math.cos(a)*50;e.ty=e.hy+Math.sin(a)*20;},step(G,e,dt){moveTo(G,e,dt,e.tx,e.ty,170);}},
+  cross:{dur:3.2,start(G,e){const a=tgtA(e,G.P)+Math.PI/4;for(let i=0;i<4;i++)BH.laser(e.x,e.y-10,a+i*Math.PI/2,{va:.55,len:240,w:5,warn:.9,dur:1.9,dmg:e.dmg*1.2,el:'arcane',own:e});},
+    step(G,e,dt,p){every(e,.8,n=>{if(n<1)return;BH.ring(e.x,e.y-10,10,n*.3,{spd:55,kind:'shard',el:'frost',r:2,dmg:e.dmg*.8,owner:e,life:4});});}},
+  prism:{dur:3.2,start(G,e){for(let i=0;i<5;i++)BH.shot(e.x,e.y-10,i*1.256,{spd:52,el:'arcane',r:4,dmg:e.dmg,owner:e,life:2.4,home:1.4,then:{at:2,die:1,f:q=>BH.ring(q.x,q.y,8,Math.random()*6,{spd:62,el:'frost',kind:'shard',r:2,dmg:e.dmg*.7,owner:e,life:3})}});},step(){}},
+};
 function rivalAI(G,e,dt,d,a,tl){const p=G.P,ph2=e.hp<e.max*.5;e.sh=Math.max(0,(e.sh||0)-dt);
-  if(e.st==='intro'){if(!e.said){e.said=1;G.toast(RIVAL_SAY.intro[0],'#ffc890');G.later(1.6,()=>G.toast(RIVAL_SAY.intro[1],'#ffc890'));}e.t-=dt;if(e.t<=-1.2){e.st='move';e.t=.6;G.setBoss(e);}return;}
-  if(ph2&&!e.ph2){e.ph2=1;G.tels=G.tels.filter(t=>t.own!==e);G.toast(RIVAL_SAY.ph2,'#ffc890');e.st='roar';e.t=.8;e.sh=3;return;}
-  // 打たれ続けると障壁
-  e.shcd=(e.shcd||0)-dt;if((e.hitc||0)>=6&&e.sh<=0&&e.shcd<=0&&e.st==='move'){e.hitc=0;e.sh=2.2;e.shcd=7;G.toast('リオが魔力障壁を張った','#c8a8ff');}
-  switch(e.st){
-  case 'move':{e.ang+=dt*1.4*e.sd;const want=70,tx=p.x-Math.cos(a)*want+Math.cos(e.ang)*24,ty=p.y-Math.sin(a)*want+Math.sin(e.ang)*20;G.chase(e,dt,e.spd,Math.atan2(ty-e.y,tx-e.x));e.t-=dt;
-    if(e.t<=0){const L=ph2?['scatter','ice','dash','ice','scatter','ice']:['scatter','scatter','dash','ice','scatter'];const k=L[e.pi++%L.length];
-      if(k==='scatter'){e.st='swind';e.t=.45;tl({type:'line',x:e.x,y:e.y-8,a:angTo(e,p),len:90,w:16,t:.45,dur:.45,fixed:1});}
-      else if(k==='ice'){e.st='iwind';e.t=.55;tl({type:'line',x:e.x,y:e.y-8,a:angTo(e,p),len:130,w:10,t:.55,dur:.55,fixed:1});if(!G.save.seen.shards){G.save.seen.shards=1;G.later(.3,()=>G.toast(RIVAL_SAY.ice,'#a8e8ff'));}}
-      else{e.st='dash';e.t=.3;e.dir=a+Math.PI/2*e.sd*(Math.random()<.5?1:-1);}}
-    break;}
-  case 'swind':e.t-=dt;if(e.t<=0){monCast(G,e,'scatter',angTo(e,p),e.dmg/4.5*.8);if(ph2)G.later(.25,()=>{if(!e.dead)monCast(G,e,'scatter',angTo(e,G.P),e.dmg/4.5*.8);});e.st='rec';e.t=.5;}break;
-  case 'iwind':e.t-=dt;if(e.t<=0){monCast(G,e,'shards',angTo(e,p),e.dmg/6);e.st='rec';e.t=.6;}break;
-  case 'dash':e.t-=dt;G.move(e,Math.cos(e.dir)*170*dt,Math.sin(e.dir)*170*dt);if(e.t<=0){e.st='rec';e.t=.25;}break;
-  case 'roar':case 'rec':e.t-=dt;if(e.t<=0){e.st='move';e.t=(ph2?.45:.7);}break;}}
+  if(e.st==='intro'){if(!e.said){e.said=1;G.toast(RIVAL_SAY.intro[0],'#ffc890');G.later(1.8,()=>G.toast(RIVAL_SAY.intro[1],'#ffc890'));}e.t-=dt;if(e.t<=-1.8){e.st='fight';e.pat=null;e.pt=0;G.setBoss(e);}return;}
+  if(ph2&&!e.ph2){e.ph2=1;BH.clear();G.toast(RIVAL_SAY.ph2,'#ffc890');e.pat=null;e.pt=0;e.pi=0;e.sh=2;}
+  e.shcd=(e.shcd||0)-dt;if((e.hitc||0)>=8&&e.sh<=0&&e.shcd<=0){e.hitc=0;e.sh=2;e.shcd=8;G.toast('リオが魔力障壁を張った','#c8a8ff');}
+  bossRun(G,e,dt,()=>ph2?['cross','dash','prism','icering','dash','spiral','icicle','dash']:['fan','dash','icering','fan','dash','spiral','icicle','dash'],RPAT);}
 
 
 // =====================================================================
 //  術綴りの学徒
 // =====================================================================
-const GAME_V='0.1.0.0';
+const GAME_V='0.2.0.0';
 const TS=16,$=id=>document.getElementById(id);
 const cv=$('cv');let cx=cv.getContext('2d');
 const lightCv=document.createElement('canvas'),lg=lightCv.getContext('2d');
@@ -1222,8 +1287,12 @@ const spr=(k,rows,pal,flip)=>memo('s|'+k+(flip?'f':''),()=>{let r=gridImg(rows,p
 
 // ===================== 記録 =====================
 const SAVE='jutsu-v1';
-const fresh=()=>({v:1,lv:1,exp:0,gems:0,rank:'E',known:{bolt:1},mast:{},staff:'novice',staffs:['novice'],atk:mkNode('bolt'),grd:null,grdLinks:[],tree:[0],quests:{q_intro:'offer'},prog:{},flags:{},seen:{},chests:{},area:'academy',started:0});
+const fresh=()=>({v:2,lv:1,exp:0,gems:0,rank:'E',known:{bolt:1},mast:{},staff:'novice',staffs:['novice'],slots:[mkNode('bolt'),null,null],act:0,tree:[0],quests:{q_intro:'offer'},prog:{},flags:{},seen:{},chests:{},warps:{academy:1},area:'academy',started:0});
 let save;try{save=Object.assign(fresh(),JSON.parse(localStorage.getItem(SAVE))||{});}catch(e){save=fresh();}
+// 前の版の記録を直す
+if(save.atk){save.slots=[save.atk,save.grd?{s:save.grd,links:save.grdLinks||[]}:null,null];save.act=0;delete save.atk;delete save.grd;delete save.grdLinks;}
+save.warps=save.warps||{academy:1};
+{const ren={q_slime:'q_noel',q_guard:'q_sera',q_wisp:'q_rio',q_mush:'q_yugo'};for(const k in ren)if(save.quests[k]){save.quests[ren[k]]=save.quests[k];save.prog[ren[k]]=save.prog[k];delete save.quests[k];}for(const k in save.quests)if(!QUESTS[k])delete save.quests[k];}
 const persist=()=>{try{localStorage.setItem(SAVE,JSON.stringify(save));}catch(e){}};
 
 // ===================== 強さ =====================
@@ -1234,9 +1303,11 @@ const staff=()=>STAFFS[save.staff]||STAFFS.novice;
 const capOf=()=>2+save.lv+staff().cap+MODS.cap;
 const needExp=l=>30+l*l*12;
 const maxHp=()=>80+(save.lv-1)*8+MODS.hp;
-const atkOK=()=>weightOf(save.atk)<=capOf()&&countOf(save.atk)<=staff().atk;
-const grdNode=()=>save.grd?{s:save.grd,links:save.grdLinks}:null;
-const grdOK=()=>{const g=grdNode();return g&&countOf(g)<=staff().grd&&weightOf(g)<=capOf();};
+const nSlots=()=>staff().slots.length;
+const slotN=i=>i<nSlots()?save.slots[i]:null;
+const slotOK=i=>{const n=slotN(i);return !!n&&weightOf(n)<=capOf()&&countOf(n)<=staff().slots[i];};
+const isGrd=n=>n&&SPELLS[n.s].kind==='grd';
+function actSlot(){let i=save.act;if(!slotN(i)||isGrd(slotN(i))){i=-1;for(let k=0;k<nSlots();k++)if(slotN(k)&&!isGrd(slotN(k))){i=k;break;}}return i;}
 const mastMul=s=>1+(mastLv(save.mast[s]||0)-1)*.08;
 
 // ===================== 地図 =====================
@@ -1257,12 +1328,13 @@ function loadArea(id,at){areaId=id;A=MAPS[id];const D=AREA[id];areaLv=D.lv;const
   let sd=id.length*977;const r=()=>(sd=(sd*16807)%2147483647)/2147483647;
   for(let i=0;i<SW*SH/14;i++){const x=1+r()*(SW-2),y=1+r()*(SH-2),k=(y|0)*SW+(x|0);if(g[k])continue;const f=ft[k];decor.push([f===7?(r()<.5?'flower':'fern'):f===2?'frost':'leaves',x,y]);}
   sec={W:SW,H:SH,g,ft,wt,depth:3,decor,gate:null};floorCv=drawFloor(sec);
-  mons=[];npcs=[];picks=[];ents.length=0;tels=[];fxs=[];parts=[];nums=[];boss=null;$('boss').classList.add('hide');
+  mons=[];npcs=[];picks=[];ents.length=0;BH.clear();tels=[];fxs=[];parts=[];nums=[];boss=null;$('boss').classList.add('hide');
   let spawn=null;const fountains=[];
   for(const [ch,x,y] of marks){const px=x*TS+8,py=y*TS+12;
     if(ch==='@'&&!spawn)spawn={x:px,y:py};
     else if(ch>='0'&&ch<='9'){}
-    else if(ch==='P')npcs.push({who:'prof',x:px,y:py});else if(ch==='L')npcs.push({who:'lib',x:px,y:py});else if(ch==='S')npcs.push({who:'smith',x:px,y:py});else if(ch==='V')npcs.push({who:'rival',x:px,y:py});
+    else if(ch==='P')npcs.push({who:'prof',x:px,y:py});else if(ch==='L')npcs.push({who:'lib',x:px,y:py});else if(ch==='S')npcs.push({who:'smith',x:px,y:py});else if(ch==='V')npcs.push({who:'rival',x:px,y:py});else if(ch==='N')npcs.push({who:'noel',x:px,y:py});else if(ch==='E')npcs.push({who:'sera',x:px,y:py});else if(ch==='Y'){if(!(qSt('q_tower')==='active'&&!save.flags.gargDown))npcs.push({who:'yugo',x:px,y:py});}
+    else if(ch==='*')objs.push({type:'star',x:px,y:py});
     else if(ch==='D')mons.push(mkMon('dummy',px,py,1));
     else if(ch==='l')objs.push({type:'lamp',x:px,y:py});else if(ch==='k')objs.push({type:'crystal',x:px,y:py,seed:x*31+y});
     else if(ch==='c'){const key=id+':'+x+','+y;objs.push({type:'chest',x:px,y:py,key,opened:!!save.chests[key]});}
@@ -1276,7 +1348,8 @@ function loadArea(id,at){areaId=id;A=MAPS[id];const D=AREA[id];areaLv=D.lv;const
   for(const o of objs)if(o.type==='chest'){const tx=o.x/TS|0,ty=o.y/TS|0;g[ty*SW+tx]=2;}
   // 出入口の場所
   P.x=spawn?spawn.x:SW*TS/2;P.y=spawn?spawn.y:SH*TS/2;
-  if(at){for(const [ch,x,y] of marks)if(ch===at){let ix=x,iy=y;if(y===0)iy=y+1;else if(y===SH-1)iy=y-1;else if(x===0)ix=x+1;else if(x===SW-1)ix=x-1;P.x=ix*TS+8;P.y=iy*TS+(y===0?14:8);break;}}
+  if(at==='*'){for(const [ch,x,y] of marks)if(ch==='*'){P.x=x*TS+8;P.y=y*TS+28;break;}}
+  else if(at){for(const [ch,x,y] of marks)if(ch===at){let ix=x,iy=y;if(y===0)iy=y+1;else if(y===SH-1)iy=y-1;else if(x===0)ix=x+1;else if(x===SW-1)ix=x-1;P.x=ix*TS+8;P.y=iy*TS+(y===0?14:8);break;}}
   sec.objs=objs;sec.marks=marks;
   cam.x=clamp(P.x-W/2,0,Math.max(0,SW*TS-W));cam.y=clamp(P.y-H*.6,0,Math.max(0,SH*TS-H));
   save.area=id==='duel'?'academy':id;exitCd=.6;persist();
@@ -1289,16 +1362,16 @@ function move(o,dx,dy){if(o.fly){o.x=clamp(o.x+dx,TS+4,SW*TS-TS-4);o.y=clamp(o.y
 function chase(e,dt,sp,a){if(e.slowT>0)sp*=.5;if(e.stuck>0){e.stuck-=dt;a+=e.sd*1.3;}const bx=e.x,by=e.y;move(e,Math.cos(a)*sp*dt,Math.sin(a)*sp*dt);if(sp>5&&Math.hypot(e.x-bx,e.y-by)<sp*dt*.3&&!(e.stuck>0)){e.stuck=.45;e.sd=rnd()<.5?1:-1;}}
 
 // ===================== 世界 =====================
-const P={x:0,y:0,r:5,hp:80,max:80,dir:'down',fi:0,ft:0,moving:false,cd:0,castT:0,castA:0,inv:0,flash:0,kx:0,ky:0,guard:null,gcd:0,isP:true,dead:false,casts:0,calm:0};
+const P={x:0,y:0,r:5,hp:80,max:80,dir:'down',fi:0,ft:0,moving:false,cd:0,castT:0,castA:0,inv:0,flash:0,kx:0,ky:0,guard:null,gcds:{},gcdMax:{},isP:true,dead:false,casts:0,calm:0};
 let mons=[],npcs=[],picks=[],tels=[],fxs=[],parts=[],nums=[],later=[],toasts=[],T=0,shk=0,hs=0,boss=null,state='title',exitCd=0;
 const ents=[];
-const G={get P(){return P;},get tels(){return tels;},set tels(v){tels=v;},get save(){return save;},Wd:null,chase,move,hurt:(d,s)=>hurt(d,s),fx:o=>fxs.push(Object.assign({life:o.t==='ring'?.3:.2,age:0},o)),shake:a=>{shk=Math.max(shk,a);},
+const G={solidB:(x,y)=>solid(x,y),get P(){return P;},get tels(){return tels;},set tels(v){tels=v;},get save(){return save;},Wd:null,chase,move,hurt:(d,s)=>hurt(d,s),fx:o=>fxs.push(Object.assign({life:o.t==='ring'?.3:.2,age:0},o)),shake:a=>{shk=Math.max(shk,a);},
   toast:(t,c)=>toast(t,c),later:(t,f)=>later.push({t,f}),part:(x,y,c)=>parts.push({x,y,vx:(rnd()-.5)*90,vy:-rnd()*80,t:0,life:.45,col:c,g:1}),setBoss:e=>{boss=e;$('boss').classList.remove('hide');$('bossn').textContent=e.D.n;},
   spawnNear:(k,e)=>{for(let t=0;t<20;t++){const a=rnd()*6.28,r=30+rnd()*30,x=e.x+Math.cos(a)*r,y=e.y+Math.sin(a)*r;if(blocked(x,y,6))continue;const n=mkMon(k,x,y,areaLv);n.aggro=1;mons.push(n);return;}}};
 const Wd={ents,get foes(){return mons;},get P(){return P;},solid,fx:G.fx,shake:G.shake,later:G.later,part:(x,y,c,fl)=>parts.push(fl?{x,y,vx:(rnd()-.5)*6,vy:-14-rnd()*14,t:0,life:.5,col:c}:{x,y,vx:(rnd()-.5)*90,vy:-rnd()*80,t:0,life:.45,col:c,g:1}),
   hit:(t,d,el,o)=>t.isP?hurt(d,o):hitMon(t,d,el,o),
   pmul:(s,el,kid)=>(1+(save.lv-1)*.04)*(1+MODS.dmg)*(SPELLS[s].car==='fly'?1+MODS.fly:1)*(kid?1+MODS.link:1)*mastMul(s)*(el==='fire'&&staff().head==='#ff7a2a'?1.3:1),
-  prange:()=>1,cutProj:(x,y,r,a)=>{for(const e of ents)if(e.team==='e'&&e.k==='proj'&&Math.hypot(e.x-x,e.y-y)<r+4){e.gone=1;G.fx({t:'pop',x:e.x,y:e.y,el:e.el});}}};
+  prange:()=>1,cutProj:(x,y,r,a)=>{if(BH.cut(x,y,r))nums.push({x,y:y-8,s:'斬',t:0,col:'#e8fcff'});for(const e of ents)if(e.team==='e'&&e.k==='proj'&&Math.hypot(e.x-x,e.y-y)<r+4){e.gone=1;G.fx({t:'pop',x:e.x,y:e.y,el:e.el});}}};
 G.Wd=Wd;
 
 // ===================== 戦い =====================
@@ -1320,15 +1393,15 @@ function killMon(f){f.dead=true;burst(f.x,f.y-6,f.boss?40:14,'#e8fcff');
   if(f.kind==='slime'){for(let i=0;i<2;i++){const n=mkMon('mslime',f.x+(i?6:-6),f.y,areaLv);n.aggro=1;mons.push(n);}}
   if(f.dark&&f.burn>0){for(const g of mons)if(!g.dead&&Math.hypot(g.x-f.x,g.y-f.y)<46){g.burn=2.5;g.dark=1;}}
   if(f.boss){boss=null;$('boss').classList.add('hide');tels=[];hs=.4;shake(8);
-    if(f.kind==='garg'){save.flags.gargDown=1;toast(GARG_SAY.end,'#cfe0ff');questProg('flag');persist();}
-    if(f.kind==='rival'){toast(RIVAL_SAY.end[0],'#ffc890');later.push({t:1.6,f:()=>toast(RIVAL_SAY.end[1],'#ffc890')});save.flags.rivalWin=1;questProg('exam');persist();later.push({t:3.5,f:()=>{loadArea('academy');}});}}
+    if(f.kind==='garg'){save.flags.gargDown=1;toast(GARG_SAY.end,'#cfe0ff');BH.clear();later.push({t:2.6,f:()=>toast('うずくまっていたユーゴを見つけた。「……た、助かった」','#ffc890')});questProg('flag');persist();}
+    if(f.kind==='rival'){BH.clear();toast(RIVAL_SAY.end[0],'#ffc890');later.push({t:1.6,f:()=>toast(RIVAL_SAY.end[1],'#ffc890')});save.flags.rivalWin=1;questProg('exam');persist();later.push({t:3.5,f:()=>{loadArea('academy');}});}}
   if(f.mini){toast(f.D.n+'を倒した','#ffd27a');shake(5);}}
 function burst(x,y,n,col){for(let i=0;i<n;i++){const a=rnd()*6.28,s=20+rnd()*70;parts.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-30,t:0,life:.4+rnd()*.4,col,g:1});}}
 function shake(a){shk=Math.max(shk,a);}
 // 主人公が打たれる。false を返すと、弾は消える
 function hurt(dmg,o){o=o||{};if(P.dead)return true;if(window.__god)return false;
   const gd=P.guard,src=o.owner||(o.ent&&o.ent.src&&o.ent.src.owner)||o;
-  if(gd&&gd.k==='parry'){P.guard=null;P.gcd=Math.min(P.gcd,.25);P.inv=.35;hs=Math.max(hs,.12);nums.push({x:P.x,y:P.y-26,s:'受け流し',t:0,col:'#e8fcff'});G.fx({t:'ring',x:P.x,y:P.y-8,r:16,el:'arcane'});
+  if(gd&&gd.k==='parry'){P.guard=null;for(const k in P.gcds)P.gcds[k]=Math.min(P.gcds[k],.25);P.inv=.35;hs=Math.max(hs,.12);nums.push({x:P.x,y:P.y-26,s:'受け流し',t:0,col:'#e8fcff'});G.fx({t:'ring',x:P.x,y:P.y-8,r:16,el:'arcane'});
     const a=src&&src.x!=null?Math.atan2(src.y-6-(P.y-8),src.x-P.x):P.castA;SP.counter(Wd,gd.node,P.x,P.y-8,a,{team:'p',mul:1+MODS.counter});
     if(SPELLS[gd.node.s].reflect&&o.proj&&o.s)SP.cast(Wd,mkNode(o.s),P.x,P.y-8,a,1,null,'counter',{team:'p',mul:1.2});
     questProg('parry');return false;}
@@ -1336,11 +1409,13 @@ function hurt(dmg,o){o=o||{};if(P.dead)return true;if(window.__god)return false;
     if(gd.hp<=0){P.guard=null;toast('障壁が割れた','#c8a8ff');G.fx({t:'ring',x:P.x,y:P.y-8,r:18,el:'arcane'});}return false;}
   if(P.inv>0)return o.proj?false:true;
   dmg=Math.max(1,Math.round(dmg));P.hp-=dmg;P.inv=.5;P.flash=.12;P.calm=0;shake(4);hs=Math.max(hs,.05);nums.push({x:P.x,y:P.y-20,v:dmg,t:0,col:'#ff6a6a'});
-  if(P.hp<=0){P.hp=0;P.dead=true;burst(P.x,P.y-8,30,'#c8a8ff');later.push({t:1.6,f:()=>{const duel=areaId==='duel';toast(duel?'試験に敗れた。また挑もう':'気を失い、学院へ運ばれた','#ff9a8a');P.dead=false;P.hp=P.max;loadArea('academy');}});}
+  if(P.hp<=0){P.hp=0;P.dead=true;burst(P.x,P.y-8,30,'#c8a8ff');later.push({t:1.6,f:()=>{const duel=areaId==='duel';BH.clear();toast(duel?'試験に敗れた。また挑もう':'気を失い、学院へ運ばれた','#ff9a8a');P.dead=false;P.hp=P.max;loadArea('academy');}});}
   return false;}
 function gainExp(n){save.exp+=n;while(save.exp>=needExp(save.lv)){save.exp-=needExp(save.lv);save.lv++;P.max=maxHp();P.hp=P.max;toast('レベル '+save.lv+'！　星図の点が増えた','#ffd27a');burst(P.x,P.y-8,24,'#ffd27a');}hud();}
-function guard(){if(state!=='play'||P.dead)return;const g=grdNode();if(!g||P.gcd>0)return;if(!grdOK()){toast('守りの術式が杖に合わない','#ff9a8a');return;}
-  const S=SPELLS[g.s];if(S.win){P.guard={k:'parry',t:S.win*(1+MODS.parry),node:g};P.gcd=S.cd;}else{P.guard={k:'barrier',t:S.dur,hp:P.max*S.absorb,node:g,ccd:0};P.gcd=S.cd;}}
+function useSlot(i){if(state!=='play'||P.dead)return;const n=slotN(i);if(!n)return;
+  if(!isGrd(n)){save.act=i;hudSlots();return;}
+  if((P.gcds[i]||0)>0)return;if(!slotOK(i)){toast('この枠の術式が杖に合わない','#ff9a8a');return;}
+  const S=SPELLS[n.s];if(S.win){P.guard={k:'parry',t:S.win*(1+MODS.parry),node:n};}else{P.guard={k:'barrier',t:S.dur,hp:P.max*S.absorb,node:n,ccd:0};}P.gcds[i]=S.cd;P.gcdMax[i]=S.cd;hudSlots();}
 
 // ===================== 課題 =====================
 const qSt=id=>save.quests[id]||'locked';
@@ -1359,11 +1434,10 @@ function giveReward(Q){const r=Q.rw,got=[];if(r.exp){gainExp(r.exp);got.push('�
 
 // ===================== 入力 =====================
 const keys={};let joy={on:false,id:null,ox:0,oy:0,x:0,y:0};const JR=46;
-addEventListener('keydown',e=>{const k=e.key.toLowerCase();keys[k]=1;if(k===' ')guard();if(k==='e')talk();if(k==='m')openMenu();});addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=0;});
+addEventListener('keydown',e=>{const k=e.key.toLowerCase();keys[k]=1;if(k>='1'&&k<='3')useSlot(+k-1);if(k===' '){for(let i=0;i<nSlots();i++)if(isGrd(slotN(i))){useSlot(i);break;}}if(k==='e')talk();if(k==='m')openMenu();});addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=0;});
 cv.addEventListener('pointerdown',e=>{if(state!=='play'||joy.id!==null)return;joy={on:true,id:e.pointerId,ox:e.clientX,oy:e.clientY,x:e.clientX,y:e.clientY};try{cv.setPointerCapture(e.pointerId);}catch(_){}});
 cv.addEventListener('pointermove',e=>{if(e.pointerId!==joy.id)return;joy.x=e.clientX;joy.y=e.clientY;const dx=joy.x-joy.ox,dy=joy.y-joy.oy,l=Math.hypot(dx,dy);if(l>JR){joy.ox=joy.x-dx/l*JR;joy.oy=joy.y-dy/l*JR;}});
 const endJ=e=>{if(e.pointerId!==joy.id)return;joy={on:false,id:null,ox:0,oy:0,x:0,y:0};};cv.addEventListener('pointerup',endJ);cv.addEventListener('pointercancel',endJ);
-$('b-guard').addEventListener('pointerdown',e=>{e.preventDefault();guard();});
 $('b-talk').onclick=()=>talk();$('b-menu').onclick=()=>openMenu();
 
 // ===================== 進行 =====================
@@ -1375,11 +1449,12 @@ function step(dt){T+=dt;if(hs>0){hs-=dt;dt*=.25;}
     const ml=Math.hypot(mx,my);if(ml>1){mx/=ml;my/=ml;}P.moving=ml>.15;const sp=P.castT>0?58:74;
     if(P.kx||P.ky){move(P,P.kx*dt,P.ky*dt);P.kx*=Math.pow(.002,dt);P.ky*=Math.pow(.002,dt);if(Math.abs(P.kx)<2)P.kx=0;if(Math.abs(P.ky)<2)P.ky=0;}
     if(P.moving){move(P,mx*sp*dt,my*sp*dt);P.dir=Math.abs(mx)>Math.abs(my)?(mx>0?'right':'left'):(my>0?'down':'up');P.ft+=dt;P.fi=(P.ft*8|0)%4;}else P.fi=(T*2|0)%2;
-    P.cd-=dt;if(P.castT>0)P.castT-=dt;if(P.inv>0)P.inv-=dt;if(P.flash>0)P.flash-=dt;if(P.gcd>0)P.gcd-=dt;
+    P.cd-=dt;if(P.castT>0)P.castT-=dt;if(P.inv>0)P.inv-=dt;if(P.flash>0)P.flash-=dt;for(const k in P.gcds)if(P.gcds[k]>0)P.gcds[k]-=dt;
     if(P.guard){P.guard.t-=dt;if(P.guard.ccd>0)P.guard.ccd-=dt;if(P.guard.t<=0)P.guard=null;}
-    if(P.cd<=0&&atkOK()){const t=nearMon(P.x,P.y-8,RANGE);if(t){const a=Math.atan2(t.y-6-(P.y-8),t.x-P.x);P.castA=a;P.castT=.18;if(!P.moving)P.dir=Math.abs(Math.cos(a))>.6?(Math.cos(a)>0?'right':'left'):(Math.sin(a)>0?'down':'up');
-        P.casts++;const twin=MODS.chain4&&P.casts%4===0;SP.castRoot(Wd,save.atk,P.x+Math.cos(a)*6,P.y-8+Math.sin(a)*6,a,P,{team:'p',mul:1,owner:P},twin);
-        P.cd=SPELLS[save.atk.s].cast*staff().cast*(1+(countOf(save.atk)-1)*.12)/(1+MODS.cast);}}
+    const ai=actSlot(),an=ai>=0?slotN(ai):null;
+    if(P.cd<=0&&an&&slotOK(ai)){const t=nearMon(P.x,P.y-8,RANGE);if(t){const a=Math.atan2(t.y-6-(P.y-8),t.x-P.x);P.castA=a;P.castT=.18;if(!P.moving)P.dir=Math.abs(Math.cos(a))>.6?(Math.cos(a)>0?'right':'left'):(Math.sin(a)>0?'down':'up');
+        P.casts++;const twin=MODS.chain4&&P.casts%4===0;SP.castRoot(Wd,an,P.x+Math.cos(a)*6,P.y-8+Math.sin(a)*6,a,P,{team:'p',mul:1,owner:P},twin);
+        P.cd=SPELLS[an.s].cast*staff().cast*(1+(countOf(an)-1)*.12)/(1+MODS.cast);}}
     // 静かなら少しずつ回復
     P.calm+=dt;if(P.calm>4&&P.hp<P.max)P.hp=Math.min(P.max,P.hp+P.max*(AREA[areaId].safe?.2:.02)*dt);
     // 出入口
@@ -1394,7 +1469,7 @@ function step(dt){T+=dt;if(hs>0){hs-=dt;dt*=.25;}
   // 押し合い
   for(let i=0;i<mons.length;i++){const a=mons[i];if(a.dead||a.fly||a.kind==='dummy')continue;for(let j=i+1;j<mons.length;j++){const b=mons[j];if(b.dead||b.fly||b.kind==='dummy')continue;const dx=b.x-a.x,dy=b.y-a.y,d=Math.hypot(dx,dy),m=a.r+b.r;if(d>0&&d<m){const p=(m-d)/2,nx=dx/d,ny=dy/d;move(a,-nx*p,-ny*p);move(b,nx*p,ny*p);}}}
   mons=mons.filter(e=>!e.dead);
-  SP.update(Wd,dt);
+  SP.update(Wd,dt);BH.update(G,dt);
   for(const l of later)l.t-=dt;const due=later.filter(l=>l.t<=0);later=later.filter(l=>l.t>0);for(const l of due)l.f();
   for(const t of tels){t.t-=dt;if(t.own&&!t.fixed&&!t.at&&!t.own.dead){t.x=t.own.x;t.y=t.own.y;}}tels=tels.filter(t=>t.t>0&&!(t.own&&t.own.dead));
   // 魔晶
@@ -1405,7 +1480,9 @@ function step(dt){T+=dt;if(hs>0){hs-=dt;dt*=.25;}
   shk*=Math.pow(.003,dt);if(shk<.2)shk=0;
   for(const e of ents)if((e.k==='proj'||e.k==='sphere')&&rnd()<.7)parts.push({x:e.x,y:e.y,vx:(rnd()-.5)*10,vy:(rnd()-.5)*10,t:0,life:.22,col:ELEMS[e.el].c[1]});
   // 話せる人
-  const n=nearNpc();$('b-talk').classList.toggle('hide',!n);if(n)$('b-talk').textContent=PEOPLE[n.who].n.split(' ').pop()+'と話す';
+  const n=nearNpc(),st=sec.objs.find(o=>o.type==='star'&&Math.hypot(o.x-P.x,o.y-P.y)<22);
+  if(st&&!save.warps[areaId]){save.warps[areaId]=1;persist();toast('転移の星標に触れた。ここへ跳べるようになった','#8fd6f0');}
+  nearStar=st&&!n?st:null;$('b-talk').classList.toggle('hide',!n&&!nearStar);if(n)$('b-talk').textContent=PEOPLE[n.who].n.split(' ').pop()+'と話す';else if(nearStar)$('b-talk').textContent='星標で跳ぶ';
   // 枠
   if(boss){$('bossbar').style.width=Math.max(0,boss.hp/boss.max*100)+'%';}
   if(T%0.25<dt)hudHp();}
@@ -1423,13 +1500,19 @@ function crystalSpr(seed){return memo('cr|'+seed,()=>{let s=seed;const r=()=>(s=
 const REST={down:110,right:80,up:80,left:100};
 function drawHumanAt(look,x0,y0,dir,anim,fi,flash,staffHead,castA,castT){const x=Math.round(x0-ox),y=Math.round(y0-oy),fr=memo('h|'+look+dir+anim+fi,()=>{const c=toCanvas(charFrame(look,dir,anim,fi));return {c,w:whiteOf(c)};}),hp=handOf(look,dir);
   const hx=x+hp.x,hy=y+hp.y;shadow(x0,y0,12);const behind=dir==='up';
-  const drawStaff=()=>{if(!staffHead)return;const a=castT>0?-castA:REST[dir]*Math.PI/180,L=15,ex=hx+Math.cos(a)*L,ey=hy-Math.sin(a)*L,bx=hx-Math.cos(a)*4,by=hy+Math.sin(a)*4;
-    for(let i=0;i<=L+4;i++){const t=i/(L+4),px=Math.round(bx+(ex-bx)*t),py=Math.round(by+(ey-by)*t);cx.fillStyle='#1a1210';cx.fillRect(px-1,py,3,1);cx.fillRect(px,py-1,1,3);}
-    for(let i=0;i<=L+4;i++){const t=i/(L+4),px=Math.round(bx+(ex-bx)*t),py=Math.round(by+(ey-by)*t);cx.fillStyle=i%5===0?'#8a6040':'#6a4428';cx.fillRect(px,py,1,1);}
-    const gx=Math.round(ex),gy=Math.round(ey);cx.fillStyle='#1a1210';cx.fillRect(gx-2,gy-2,5,5);cx.fillStyle=staffHead;cx.fillRect(gx-1,gy-1,3,3);cx.fillStyle=castT>0?'#ffffff':'#e8fcff';cx.fillRect(gx-1,gy-1,1,1);};
+  const drawStaff=()=>{if(!staffHead)return;const sh=typeof staffHead==='object'?staffHead:{head:staffHead,wood:'#6a4428',shape:'plain'};
+    const a=castT>0?-castA:REST[dir]*Math.PI/180,L=16,ca=Math.cos(a),sa=-Math.sin(a),ex=hx+ca*L,ey=hy+sa*L,bx=hx-ca*5,by=hy-sa*5,nx=-sa,ny=ca;
+    const line=(c,w)=>{for(let i=0;i<=L+5;i++){const t=i/(L+5),px=Math.round(bx+(ex-bx)*t),py=Math.round(by+(ey-by)*t);cx.fillStyle=c;cx.fillRect(px-(w>>1),py-(w>>1),w,w);}};
+    line('#140e0c',3);line(sh.wood,1);
+    for(const t of [.35,.7]){const px=Math.round(bx+(ex-bx)*t),py=Math.round(by+(ey-by)*t);cx.fillStyle='#c8a040';cx.fillRect(px,py,1,1);}
+    const gx=Math.round(ex),gy=Math.round(ey);cx.fillStyle='#140e0c';
+    if(sh.shape==='fork'){for(const s of [-1,1])for(let i=1;i<5;i++){const px=Math.round(ex+nx*s*i*.9+ca*i*.6),py=Math.round(ey+ny*s*i*.9+sa*i*.6);cx.fillStyle='#140e0c';cx.fillRect(px-1,py-1,3,3);cx.fillStyle=sh.wood;cx.fillRect(px,py,1,1);}}
+    else if(sh.shape==='ward'){cx.fillRect(gx-3,gy-3,7,7);cx.fillStyle='#5a5a6a';cx.fillRect(gx-2,gy-2,5,5);}
+    else{cx.fillRect(gx-3,gy-3,7,7);cx.fillStyle=sh.wood;cx.fillRect(gx-2,gy-2,5,5);}
+    cx.fillStyle='#140e0c';cx.fillRect(gx-1,gy-1,3,3);cx.fillStyle=sh.head;cx.fillRect(gx-1,gy-1,3,3);cx.fillStyle=castT>0?'#ffffff':'#e8fcff';cx.fillRect(gx-1,gy-1,1,1);};
   if(behind)drawStaff();cx.drawImage(flash?fr.w:fr.c,x-FX-8,y-FY-FOOT);if(!behind)drawStaff();
   cx.fillStyle='#1a1424';cx.fillRect(hx-1,hy-2,2,4);cx.fillRect(hx-2,hy-1,4,2);cx.fillStyle=hp.col;cx.fillRect(hx-1,hy-1,2,2);}
-function drawPlayer(){if(P.dead)return;if(P.inv>.1&&(T*20|0)%2&&!P.guard)return;drawHumanAt('student',P.x,P.y,P.dir,P.moving?'walk':'idle',P.fi,P.flash>0,staff().head,P.castA,P.castT);
+function drawPlayer(){if(P.dead)return;if(P.inv>.1&&(T*20|0)%2&&!P.guard)return;drawHumanAt('student',P.x,P.y,P.dir,P.moving?'walk':'idle',P.fi,P.flash>0,{head:(actSlot()>=0?ELEMS[SPELLS[slotN(actSlot()).s].el].c[1]:staff().head),wood:staff().wood,shape:staff().shape},P.castA,P.castT);
   const g=P.guard,x=Math.round(P.x-ox),y=Math.round(P.y-8-oy);if(g){cx.globalAlpha=g.k==='parry'?.8:.45+.15*Math.sin(T*10);cx.strokeStyle=g.k==='parry'?'#ffffff':'#c8a8ff';cx.lineWidth=1;cx.beginPath();cx.ellipse(x+.5,y+.5,g.k==='parry'?12:13,g.k==='parry'?14:16,0,0,6.28);cx.stroke();if(g.k==='barrier'){cx.globalAlpha=.15;cx.fillStyle='#c8a8ff';cx.fill();}cx.globalAlpha=1;}}
 function drawMon(e){if(e.dead)return;const wh=e.flash>0||(e.st==='wind'&&(T*14|0)%2===0),fl=e.face<0;let lift=e.fly?10+Math.sin(e.anim*3)*2:0;lift+=e.lift||0;
   if(e.kind==='rival'){drawHumanAt('rival',e.x,e.y,Math.abs(P.x-e.x)>Math.abs(P.y-e.y)?(P.x>e.x?'right':'left'):(P.y>e.y?'down':'up'),'walk',(e.anim*8|0)%4,wh,'#e05a4a',angTo(e,P),e.st==='swind'||e.st==='iwind'?.2:0);
@@ -1438,7 +1521,7 @@ function drawMon(e){if(e.dead)return;const wh=e.flash>0||(e.st==='wind'&&(T*14|0
     if(e.kind==='slime')s=spr('slime',SLIME_G,SLIME_PAL);else if(e.kind==='mslime')s=spr('mslime',MSLIME,SLIME_PAL);
     else if(e.kind==='wisp')s=spr('wisp'+((e.anim*6|0)%2),WISP_F[(e.anim*6|0)%2],WISP_PAL);
     else if(e.kind==='mush')s=spr('mush',MUSH,MUSH_PAL);else if(e.kind==='imp'){const i=(e.anim*8|0)%2;s=spr('imp'+i,IMP_F[i],IMP_PAL,fl);}
-    else if(e.kind==='statue')s=spr('garg'+(e.st==='sleep'?'s':''),GARG,e.st==='sleep'?Object.assign({},GARG_PAL,{K:'#3a3644'}):GARG_PAL,fl);
+    else if(e.kind==='statue')s=spr('garg'+(e.st==='sleep'?'s':''),GARG,e.st==='sleep'?GARG_SLEEP:GARG_PAL,fl);
     else if(e.kind==='garg')s=spr('gargB'+(e.ph2?2:1),GARG_BIG,e.ph2?GARG_PAL2:GARG_PAL,fl);
     else s=spr('dummy',DUMMY,DUMMY_PAL);
     const sq=(e.kind==='slime'||e.kind==='mslime')?Math.max(0,Math.round(Math.sin(e.anim*6))):0;drawSprAt(s,e.x,e.y+2+sq-lift,wh);}
@@ -1475,9 +1558,9 @@ function lightMap(){const a=A.dark;lg.globalCompositeOperation='source-over';con
   for(const o of sec.objs){if(o.type==='lamp')L(o.x,o.y-24,68+Math.sin(T*9+o.x)*2,'255,156,76',.85);else if(o.type==='crystal')L(o.x,o.y-10,46,'100,196,255',.6);else if(o.type==='chest'&&!o.opened)L(o.x,o.y-6,24,'255,210,120',.35);}
   for(const e of ents){const c=ELEMS[e.el].L;if(e.k==='proj')L(e.x,e.y,16+e.r*3,c,.6);else if(e.k==='sphere')L(e.x,e.y,34,c,.7);else if(e.k==='zone')L(e.x,e.y,e.r+12,c,.4);else if(e.k==='nova')L(e.x,e.y,e.r+10,c,.8*(1-e.t/e.dur));else if(e.k==='blade')L(e.x,e.y,e.r+8,c,.6*(1-e.t/e.dur));else if(e.k==='meteor')L(e.x,e.y,e.r,'255,60,60',.3);}
   for(const f of fxs)if(f.t==='zap')L(f.x2,f.y2,18,(ELEMS[f.el]||ELEMS.lightning).L,.6);
-  for(const e of mons){if(e.kind==='wisp')L(e.x,e.y-14,34,'170,120,255',.55);else if(e.kind==='imp')L(e.x,e.y-12,20,'255,120,60',.35);else if(e.kind==='garg'&&e.ph2)L(e.x,e.y-20,40,'255,240,140',.3);if(e.burn>0)L(e.x,e.y-6,22,e.dark?'170,80,230':'255,130,50',.4);}
+  for(const e of mons){if(e.kind==='garg')L(e.x,e.y-24,46,e.ph2?'255,120,255':'160,70,230',.5);if(e.kind==='wisp')L(e.x,e.y-14,34,'170,120,255',.55);else if(e.kind==='imp')L(e.x,e.y-12,20,'255,120,60',.35);else if(e.kind==='garg'&&e.ph2)L(e.x,e.y-20,40,'255,240,140',.3);if(e.burn>0)L(e.x,e.y-6,22,e.dark?'170,80,230':'255,130,50',.4);}
   for(const k of picks)L(k.x,k.y-2,12,'150,120,255',.4);
-  for(const t of tels)L(t.x,t.y,(t.r||20)+8,'255,60,70',.25);
+  for(const t of tels)L(t.x,t.y,(t.r||20)+8,'255,60,70',.25);BH.lights(L);for(const o of sec.objs)if(o.type==='star')L(o.x,o.y-6,40,save.warps[areaId]?'140,200,255':'90,90,140',.6);
   lg.globalCompositeOperation='source-over';}
 let pfxOn=false;
 function render(){cx.clearRect(0,0,W,H);cx.fillStyle='#05060f';cx.fillRect(0,0,W,H);if(!sec)return;
@@ -1486,33 +1569,45 @@ function render(){cx.clearRect(0,0,W,H);cx.fillStyle='#05060f';cx.fillRect(0,0,W
   for(const e of ents)if(e.k==='zone'||e.k==='meteor')drawEnt(e);
   drawTels();
   for(const k of picks){const x=Math.round(k.x-ox),y=Math.round(k.y-oy-Math.abs(Math.sin(T*5+k.x))*2);cx.fillStyle='#1a0a30';cx.fillRect(x-2,y-3,5,6);cx.fillStyle='#a070ff';cx.fillRect(x-1,y-2,3,4);cx.fillStyle='#e8d8ff';cx.fillRect(x-1,y-2,1,2);}
-  const list=[];for(const o of sec.objs)list.push([o.y,()=>drawSprAt(o.type==='lamp'?spr('lamp',LAMP,OBJ_PAL):o.type==='chest'?spr('chest'+(o.opened?'o':''),o.opened?CHEST_OPEN:CHEST,OBJ_PAL):crystalSpr(o.seed),o.x,o.y+2)]);
+  const list=[];for(const o of sec.objs)list.push([o.y,()=>o.type==='star'?drawStar(o):drawSprAt(o.type==='lamp'?spr('lamp',LAMP,OBJ_PAL):o.type==='chest'?spr('chest'+(o.opened?'o':''),o.opened?CHEST_OPEN:CHEST,OBJ_PAL):crystalSpr(o.seed),o.x,o.y+2)]);
   for(const n of npcs)list.push([n.y,()=>{drawHumanAt(PEOPLE[n.who].look,n.x,n.y,Math.abs(P.x-n.x)>Math.abs(P.y-n.y)+6?(P.x>n.x?'right':'left'):'down','idle',(T*2|0)%2,false,n.who==='rival'?'#e05a4a':n.who==='prof'?'#f2c440':null,0,0);
     if(questMark(n.who)){const x=Math.round(n.x-ox),y=Math.round(n.y-oy-30+Math.sin(T*4)*1.5);cx.fillStyle='#0b0a18';cx.fillRect(x-2,y-1,5,9);cx.fillStyle=questMark(n.who)==='ready'?'#8ff0a4':'#ffd27a';cx.fillRect(x-1,y,3,5);cx.fillRect(x-1,y+6,3,1);}}]);
   for(const e of mons)list.push([e.y,()=>drawMon(e)]);list.push([P.y,drawPlayer]);list.sort((a,b)=>a[0]-b[0]);for(const l of list)l[1]();
-  for(const e of ents)if(e.k!=='zone'&&e.k!=='meteor')drawEnt(e);for(const f of fxs)drawFx(f);
+  for(const e of ents)if(e.k!=='zone'&&e.k!=='meteor')drawEnt(e);BH.draw(cx,ox,oy,T);for(const f of fxs)drawFx(f);
   for(const q of parts){cx.globalAlpha=1-q.t/q.life;px1(q.x,q.y,q.col);}cx.globalAlpha=1;
   if(!pfxOn&&typeof PFX!=='undefined'){pfxOn=PFX.init();if(pfxOn)PFX.resize(W,H,S);}
   if(pfxOn){lightMap();PFX.setEnabled(true);PFX.draw(cv,lightCv,1);cx.clearRect(0,0,W,H);}
   for(const n of nums){const k=n.t/.8;cx.globalAlpha=k>.6?(1-k)/.4:1;if(n.s){cx.font='8px DotGothic16, monospace';cx.textAlign='center';cx.fillStyle='#0b0a18';cx.fillText(n.s,Math.round(n.x-ox)+1,Math.round(n.y-oy-k*10)+1);cx.fillStyle=n.col;cx.fillText(n.s,Math.round(n.x-ox),Math.round(n.y-oy-k*10));}else drawNum(n.v,n.x-ox,n.y-oy-k*12,n.col);}cx.globalAlpha=1;
   if(joy.on&&state==='play'){const x=joy.ox/S,y=joy.oy/S,kx=joy.x/S,ky=joy.y/S;cx.globalAlpha=.28;cx.strokeStyle='#e8fcff';cx.beginPath();cx.arc(Math.round(x)+.5,Math.round(y)+.5,JR/S,0,6.28);cx.stroke();cx.globalAlpha=.45;cx.fillStyle='#e8fcff';cx.beginPath();cx.arc(Math.round(kx),Math.round(ky),5,0,6.28);cx.fill();cx.globalAlpha=1;}}
+function drawStar(o){const x=Math.round(o.x-ox),y=Math.round(o.y-oy),on=save.warps[areaId];
+  cx.globalAlpha=.6;cx.strokeStyle=on?'#8fd6f0':'#5a5a7a';cx.beginPath();cx.ellipse(x+.5,y+.5,13,8,0,0,6.28);cx.stroke();cx.beginPath();cx.ellipse(x+.5,y+.5,8,5,0,0,6.28);cx.stroke();cx.globalAlpha=1;
+  for(let i=0;i<6;i++){const a=T*(on?1.2:.3)+i*1.047;cx.fillStyle=on?'#e8fcff':'#7a7a9a';cx.fillRect(Math.round(x+Math.cos(a)*13),Math.round(y+Math.sin(a)*8),1,1);}
+  const h=Math.round(Math.sin(T*2)*2);cx.fillStyle='#0b0a18';cx.fillRect(x-3,y-18+h,7,9);cx.fillStyle=on?'#8fd6f0':'#5a5a7a';cx.fillRect(x-2,y-17+h,5,7);cx.fillStyle='#ffffff';cx.fillRect(x-1,y-16+h,2,2);}
 function questMark(who){for(const id in QUESTS){const Q=QUESTS[id];if(Q.who!==who)continue;const s=qSt(id);if(s==='ready')return 'ready';}for(const id in QUESTS){const Q=QUESTS[id];if(Q.who===who&&qSt(id)==='offer')return 'offer';}return null;}
 
 // ===================== 表示 =====================
 function toast(t,col){toasts.push({t,col:col||'#e8eef8',life:2.6});if(toasts.length>4)toasts.shift();drawToasts();}
 function drawToasts(){$('toasts').innerHTML=toasts.map(t=>`<div style="color:${t.col}">${t.t}</div>`).join('');}
 setInterval(()=>{for(const t of toasts)t.life-=.25;const n=toasts.length;toasts=toasts.filter(t=>t.life>0);if(n!==toasts.length)drawToasts();},250);
-function hudHp(){$('hpbar').style.width=Math.max(0,P.hp/P.max*100)+'%';$('hptx').textContent=Math.ceil(P.hp)+' / '+P.max;
-  const g=$('b-guard'),gn=grdNode();g.classList.toggle('hide',!gn);if(gn){const S=SPELLS[gn.s];g.textContent=S.sh||S.n.slice(0,2);g.style.setProperty('--cd',P.gcd>0?Math.min(1,P.gcd/S.cd):0);g.classList.toggle('on',!!P.guard);}}
+function hudHp(){$('hpbar').style.width=Math.max(0,P.hp/P.max*100)+'%';$('hptx').textContent=Math.ceil(P.hp)+' / '+P.max;hudSlotsCd();}
+// 右下の魔術の枠:攻めは押すと切り替え、守りは押すとその場で唱える
+function hudSlots(){const ai=actSlot();let h='';for(let i=nSlots()-1;i>=0;i--){const n=slotN(i);if(!n){h+=`<button class="slot empty" data-s="${i}">${i+1}</button>`;continue;}const S=SPELLS[n.s],c=ELEMS[S.el].c,ok=slotOK(i);
+    h+=`<button class="slot ${isGrd(n)?'grd':'atk'}${i===ai?' on':''}${ok?'':' bad'}" data-s="${i}" style="--c1:${c[1]};--c2:${c[2]}"><b>${S.sh||S.n.slice(0,2)}</b><i>${n.links.length?'＋'+n.links.length:''}</i></button>`;}
+  $('slots').innerHTML=h;$('slots').querySelectorAll('[data-s]').forEach(b=>b.addEventListener('pointerdown',e=>{e.preventDefault();useSlot(+b.dataset.s);}));hudSlotsCd();}
+function hudSlotsCd(){$('slots').querySelectorAll('.slot.grd').forEach(b=>{const i=+b.dataset.s,cd=P.gcds[i]||0,m=P.gcdMax[i]||1;b.style.setProperty('--cd',cd>0?Math.min(1,cd/m):0);b.classList.toggle('guarding',!!P.guard);});}
 function hudGem(){$('h-gem').textContent='魔晶 '+save.gems;}
 function hud(){P.max=maxHp();if(P.hp>P.max)P.hp=P.max;$('h-lv').textContent='Lv '+save.lv+' ・ ランク'+save.rank;$('expbar').style.width=(save.exp/needExp(save.lv)*100)+'%';hudGem();hudHp();hudQ();
-  $('h-warn').textContent=atkOK()?'':'術式が重すぎる（杖と魔術で直す）';}
+  let bad=false;for(let i=0;i<nSlots();i++)if(slotN(i)&&!slotOK(i))bad=true;$('h-warn').textContent=bad?'重すぎる術式がある（杖と魔術で直す）':'';hudSlots();}
 function hudQ(){const L=Object.keys(QUESTS).filter(id=>qSt(id)==='active'||qSt(id)==='ready');const id=L.find(i=>qSt(i)==='ready')||L[0];
   if(!id){$('h-q').textContent='';return;}const Q=QUESTS[id];$('h-q').innerHTML=qSt(id)==='ready'?`<b>${Q.name}</b> 果たした・${PEOPLE[Q.who].n.split(' ').pop()}に報告`:`<b>${Q.name}</b> ${Q.n?`${save.prog[id]||0} / ${Q.n}`:Q.desc}`;}
 
 // ===================== 話す =====================
 let dlgQ=[];
-function talk(){if(state!=='play')return;const n=nearNpc();if(!n)return;const who=n.who,Pp=PEOPLE[who];
+let nearStar=null;
+const WARPN={academy:'星見の学院',hill:'霧の丘',tower:'古い鐘楼'};
+function talk(){if(state!=='play')return;const n=nearNpc();if(!n&&nearStar){state='menu';$('menu').classList.add('hide');
+    pick('どこへ跳ぶ？',Object.keys(WARPN).filter(k=>save.warps[k]&&k!==areaId).map(k=>({k,n:WARPN[k],d:''})).concat([{k:'__x',n:'やめる',d:''}]),k=>{state='play';if(k!=='__x'){burst(P.x,P.y-8,20,'#8fd6f0');loadArea(k,'*');}});$('pk-x').onclick=()=>{$('pk').classList.add('hide');state='play';};return;}
+  if(!n)return;const who=n.who,Pp=PEOPLE[who];
   const ready=Object.keys(QUESTS).find(id=>QUESTS[id].who===who&&qSt(id)==='ready');
   if(ready){const Q=QUESTS[ready];save.quests[ready]='done';const got=giveReward(Q);dialog(Pp.n,Q.done,[{t:'受け取った：'+got.join('、'),k:'ok'}]);if(Q.epilogue)later.push({t:.1,f:()=>{}});return;}
   const exam=who==='prof'&&qSt('q_exam')==='active';
@@ -1528,7 +1623,7 @@ function dialog(name,lines,acts){state='dlg';joy={on:false,id:null,ox:0,oy:0,x:0
     if(dlgQ.length){$('dlg-a').innerHTML='<button class="pf" id="dlg-next">▼</button>';$('dlg-next').onclick=show;}
     else{$('dlg-a').innerHTML=acts.map((a,i)=>`<button class="pf" data-i="${i}">${a.t}</button>`).join('');$('dlg-a').querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>dlgAct(acts[+b.dataset.i]));}};show();}
 function dlgAct(a){$('dlg').classList.add('hide');state='play';
-  if(a.k==='acc'){const Q=QUESTS[a.id];save.quests[a.id]='active';save.prog[a.id]=0;if(Q.accept&&Q.accept.spell){save.known[Q.accept.spell]=1;if(!save.grd){save.grd=Q.accept.spell;}toast('魔術「'+SPELLS[Q.accept.spell].n+'」を覚えた。守りのボタンで使える','#c8a8ff');}
+  if(a.k==='acc'){const Q=QUESTS[a.id];save.quests[a.id]='active';save.prog[a.id]=0;if(Q.accept&&Q.accept.spell){save.known[Q.accept.spell]=1;let k=-1;for(let i=0;i<nSlots();i++)if(!slotN(i)){k=i;break;}if(k>=0)save.slots[k]=mkNode(Q.accept.spell);toast('「'+SPELLS[Q.accept.spell].n+'」を覚えた。'+(k>=0?'右下の枠に入れた。当たる瞬間に押そう':'杖と魔術で枠に入れよう'),'#c8a8ff');}
     if(Q.type==='boss'&&save.flags[Q.flag])save.quests[a.id]='ready';persist();hud();}
   if(a.k==='exam'){loadArea('duel');}
   if(a.k==='spells')openMenu('learn');if(a.k==='staffs')openMenu('staffs');}
@@ -1537,61 +1632,56 @@ function dlgAct(a){$('dlg').classList.add('hide');state='play';
 let menuTab='staff',slotSel=null;
 function openMenu(tab){if(state!=='play'&&state!=='menu')return;state='menu';joy={on:false,id:null,ox:0,oy:0,x:0,y:0};menuTab=tab||menuTab;if(menuTab==='learn'||menuTab==='staffs'){}$('menu').classList.remove('hide');renderMenu();}
 function closeMenu(){state='play';$('menu').classList.add('hide');$('pk').classList.add('hide');persist();hud();}
-$('b-mclose').onclick=closeMenu;$('pk-x').onclick=()=>$('pk').classList.add('hide');
+$('b-mclose').onclick=closeMenu;$('pk-x').onclick=()=>{$('pk').classList.add('hide');if(state==='menu'&&$('menu').classList.contains('hide'))state='play';};
 function pick(title,items,cb){$('pk-t').textContent=title;$('pk-l').innerHTML=items.map((it,i)=>`<button class="pi ${it.cls||''}" data-i="${i}" ${it.off?'disabled':''}><b>${it.n}</b><span>${it.d||''}</span><em>${it.w!=null?'理解 '+it.w:''}</em></button>`).join('')||'<p class="small">選べるものがない</p>';
-  $('pk').classList.remove('hide');$('pk-l').querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{$('pk').classList.add('hide');cb(items[+b.dataset.i].k);renderMenu();});}
+  $('pk').classList.remove('hide');$('pk-l').querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{$('pk').classList.add('hide');cb(items[+b.dataset.i].k);if(!$('menu').classList.contains('hide'))renderMenu();});}
 function renderMenu(){const tabs=[['staff','杖'],['book','魔術'],['tree','星図'],['quest','課題']];if(menuTab==='learn'||menuTab==='staffs')tabs.push([menuTab,menuTab==='learn'?'書庫':'工房']);
   $('m-tabs').innerHTML=tabs.map(([k,n])=>`<button class="tab${k===menuTab?' on':''}" data-t="${k}">${n}</button>`).join('');$('m-tabs').querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{menuTab=b.dataset.t;renderMenu();});
   $('m-head').innerHTML=`Lv ${save.lv} ・ ランク${save.rank} ・ 魔晶 ${save.gems} ・ 理解 ${capOf()}`;
   const B=$('m-body');B.className='m-'+menuTab;
   if(menuTab==='staff')renderStaff(B);else if(menuTab==='book')renderBook(B);else if(menuTab==='tree')renderTree(B);else if(menuTab==='quest')renderQuests(B);else if(menuTab==='learn')renderLearn(B);else renderStaffs(B);}
-// ---- 杖:穴に魔術をはめる ----
+// ---- 杖:枠ごとに、主の穴と結びの穴 ----
 const elCol=el=>ELEMS[el].c[1];
-function renderStaff(B){const st=staff(),atk=save.atk,g=grdNode(),w=weightOf(atk),cap=capOf();
-  const aSlots=[atk,...atk.links.map(l=>l.n)],gSlots=g?[g,...g.links.map(l=>l.n)]:[];
-  const sockets=[];for(let i=0;i<st.atk;i++)sockets.push({grp:'atk',i,n:aSlots[i]||null});for(let i=0;i<st.grd;i++)sockets.push({grp:'grd',i,n:gSlots[i]||null});
-  B.innerHTML=`<div class="staffwrap"><canvas id="staffcv" width="60" height="150"></canvas>${sockets.map((s,k)=>`<button class="sock ${s.grp}${s.n?' full':''}" data-k="${k}" style="--c:${s.n?elCol(SPELLS[s.n.s].el):'#3a3f5c'};top:${socketPos(st,s).y}px;left:${socketPos(st,s).x}px">${s.n?SPELLS[s.n.s].n.slice(0,2):s.grp==='grd'?'守':'＋'}</button>`).join('')}</div>
-    <div class="slots"><h4>${st.n}</h4><p class="small">${st.d}</p>
-      <div class="wbar"><div class="wfill${w>cap?' bad':''}" style="width:${Math.min(100,w/cap*100)}%"></div><span>理解 ${w} / ${cap}</span></div>
-      <h5>攻め</h5>${aSlots.map((n,i)=>i>=st.atk?'':slotRow('atk',i,n,atk)).join('')}${st.atk>1&&aSlots.length<st.atk?`<p class="small dim">空いた穴に魔術をはめると、主の魔術に結ばれる</p>`:''}
-      <h5>守り</h5>${g?gSlots.map((n,i)=>slotRow('grd',i,n,g)).join(''):`<p class="small dim">${save.known.parry||save.known.barrier?'穴を押して守りの魔術をはめる':'まだ守りの魔術を知らない'}</p>`}
-      <p class="sum">${spellText(atk)}${g?'<br>'+spellText(g):''}</p></div>`;
-  drawStaffArt($('staffcv'),st,sockets);
-  B.querySelectorAll('.sock').forEach(b=>b.onclick=()=>slotPick(sockets[+b.dataset.k]));
-  B.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{const [grp,i]=b.dataset.mode.split(':'),root=grp==='atk'?save.atk:grdNode(),L=(grp==='atk'?save.atk.links:save.grdLinks)[+i-1];
+function sockList(st){const L=[];st.slots.forEach((cnt,gi)=>{const root=save.slots[gi];for(let i=0;i<cnt;i++)L.push({g:gi,i,n:i===0?root:(root&&root.links[i-1]?root.links[i-1].n:null)});});return L;}
+function renderStaff(B){const st=staff(),cap=capOf(),socks=sockList(st);
+  B.innerHTML=`<div class="staffwrap"><canvas id="staffcv" width="64" height="170"></canvas>${socks.map((s,k)=>{const [x,y]=sockXY(st,s.g,s.i);return `<button class="sock${s.n?' full':''}${s.i?' link':''}" data-k="${k}" style="--c:${s.n?elCol(SPELLS[s.n.s].el):'#4a4f70'};left:${x*2-15}px;top:${y*2-15}px">${s.n?(SPELLS[s.n.s].sh||SPELLS[s.n.s].n.slice(0,2)):s.i?'結':s.g+1}</button>`;}).join('')}</div>
+    <div class="slots"><h4>${st.n}</h4><p class="small">${st.d}</p><p class="small dim">理解の上限 ${cap}（枠ごと）</p>
+      ${st.slots.map((cnt,gi)=>{const n=save.slots[gi],w=n?weightOf(n):0;return `<div class="grp"><h5>枠 ${gi+1}${n?(isGrd(n)?'・守り（押して唱える）':'・攻め（押すと切り替え）'):''}</h5>
+        ${n?`<div class="wbar"><div class="wfill${w>cap?' bad':''}" style="width:${Math.min(100,w/cap*100)}%"></div><span>理解 ${w} / ${cap}</span></div>`:''}
+        ${n?`<div class="srow"><span class="dot" style="background:${elCol(SPELLS[n.s].el)}"></span><b>${SPELLS[n.s].n}</b></div>`+n.links.map((l,li)=>`<div class="srow sub">└ <b>${SPELLS[l.n.s].n}</b><button class="chip mode" data-mode="${gi}:${li}">${modeName(SPELLS[n.s],SPELLS[l.n.s],l.m)} ▾</button></div>`).join(''):'<p class="small dim">空いている。杖の宝石を押して魔術をはめる</p>'}
+        ${cnt>1&&n?`<p class="small dim">結べる数 ${n.links.length} / ${cnt-1}</p>`:''}</div>`;}).join('')}</div>`;
+  drawStaffArt($('staffcv'),st,socks);
+  B.querySelectorAll('.sock').forEach(b=>b.onclick=()=>slotPick(socks[+b.dataset.k]));
+  B.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{const [gi,li]=b.dataset.mode.split(':').map(Number),root=save.slots[gi],L=root.links[li];
     pick('結び方',linkModes(SPELLS[root.s],SPELLS[L.n.s]).map(m=>({k:m.k,n:m.n})),k=>{L.m=k;});});}
-function slotRow(grp,i,n,root){if(!n)return '';const S=SPELLS[n.s],L=i?(grp==='atk'?save.atk.links:save.grdLinks)[i-1]:null;
-  return `<div class="srow"><span class="dot" style="background:${elCol(S.el)}"></span><b>${S.n}</b>${i?`<button class="chip mode" data-mode="${grp}:${i}">${modeName(SPELLS[root.s],S,L.m)} ▾</button>`:'<span class="small dim"> 主</span>'}</div>`;}
-// 杖の絵(60×150 を2倍で見せる)と穴の位置
-function sockXY(st,grp,i){if(grp==='atk'){if(st.atk===1)return [30,12];if(st.shape==='fork')return [[13,14],[47,14],[30,4]][i];if(st.shape==='ward')return [[21,16],[39,16],[30,4]][i];return [[30,10],[30,34],[30,58]][i];}
-  return [30,92+i*24];}
-function socketPos(st,s){const [x,y]=sockXY(st,s.grp,s.i);return {x:x*2-15,y:y*2-15};}
-function drawStaffArt(c,st,sockets){const g=c.getContext('2d');g.imageSmoothingEnabled=false;g.clearRect(0,0,60,150);const wood=st.wood,dk='#1a1210';
+// 杖の絵(64×170 を2倍で見せる)と宝石の位置
+function sockXY(st,gi,i){const head=st.shape==='fork'?[[14,22],[50,22],[32,10]]:st.shape==='ward'?[[22,20],[42,20],[32,8]]:st.shape==='thin'?[[32,14],[24,30],[40,30]]:[[32,16],[32,40],[32,64]];
+  if(gi===0)return head[i];const y=gi===1?96:132;return i===0?[32,y]:[i%2?18:46,y+10];}
+function drawStaffArt(c,st,socks){const g=c.getContext('2d');g.imageSmoothingEnabled=false;g.clearRect(0,0,64,170);const wood=st.wood,dk='#140e0c',hi='rgba(255,240,220,.28)';
   const glow=(x,y,r,col)=>{const gr=g.createRadialGradient(x,y,0,x,y,r);gr.addColorStop(0,col);gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(x-r,y-r,r*2,r*2);};
-  glow(30,16,30,st.head+'55');
-  // 柄
-  for(let y=24;y<148;y++){const x=30+Math.round(Math.sin(y*.07)*1);g.fillStyle=dk;g.fillRect(x-3,y,7,1);g.fillStyle=wood;g.fillRect(x-2,y,5,1);g.fillStyle='rgba(255,255,255,.22)';g.fillRect(x-1,y,1,1);g.fillStyle='rgba(0,0,0,.25)';g.fillRect(x+2,y,1,1);if(y%16===0){g.fillStyle='#c8a040';g.fillRect(x-3,y,7,2);}}
-  g.fillStyle='#c8a040';g.fillRect(26,144,9,4);
+  glow(32,20,36,st.head+'40');
+  // 柄:木目と、ところどころの金の輪
+  for(let y=26;y<166;y++){const x=32+Math.round(Math.sin(y*.06)*1.2);g.fillStyle=dk;g.fillRect(x-4,y,9,1);g.fillStyle=wood;g.fillRect(x-3,y,7,1);g.fillStyle=hi;g.fillRect(x-2,y,1,1);g.fillStyle='rgba(0,0,0,.28)';g.fillRect(x+2,y,2,1);if((y*7)%11===0){g.fillStyle='rgba(0,0,0,.35)';g.fillRect(x-1,y,2,1);}}
+  for(const y of [84,120,156]){g.fillStyle=dk;g.fillRect(27,y-1,11,6);g.fillStyle='#c8a040';g.fillRect(28,y,9,4);g.fillStyle='#f2d070';g.fillRect(28,y,9,1);g.fillStyle='#8a6a20';g.fillRect(28,y+3,9,1);}
+  g.fillStyle=dk;g.fillRect(28,164,9,5);g.fillStyle='#c8a040';g.fillRect(29,165,7,3);
   // 頭
-  if(st.shape==='fork'){for(let i=0;i<20;i++){const y=26-i;for(const s of [-1,1]){const x=30+s*i*.85;g.fillStyle=dk;g.fillRect(Math.round(x)-2,y,5,1);g.fillStyle=wood;g.fillRect(Math.round(x)-1,y,3,1);}}}
-  else if(st.shape==='ward'){g.fillStyle=dk;g.fillRect(14,6,33,22);g.fillStyle='#4a4a5a';g.fillRect(15,7,31,20);g.fillStyle='#8a93a8';g.fillRect(15,7,31,2);g.fillStyle='#2a2a36';g.fillRect(15,25,31,2);}
-  else if(st.shape==='thin'){for(let i=0;i<22;i++){const x=30+Math.round(Math.sin(i*.5)*4);g.fillStyle=dk;g.fillRect(x-2,24-i,4,1);g.fillStyle=wood;g.fillRect(x-1,24-i,2,1);}}
-  else{g.fillStyle=dk;g.beginPath();g.arc(30,13,11,0,6.28);g.fill();g.fillStyle=wood;g.beginPath();g.arc(30,13,9,0,6.28);g.fill();g.fillStyle=dk;g.beginPath();g.arc(30,13,6,0,6.28);g.fill();}
-  // 結び:主の穴から光の線
-  const by={atk:[],grd:[]};for(const s of sockets)by[s.grp].push(s);
-  for(const k of ['atk','grd']){const L=by[k];if(L.length<2||!L[0].n)continue;const [x0,y0]=sockXY(st,k,0);for(let i=1;i<L.length;i++){if(!L[i].n)continue;const [x1,y1]=sockXY(st,k,i),col=ELEMS[SPELLS[L[i].n.s].el].c[1];
-    g.strokeStyle=col;g.globalAlpha=.35;g.lineWidth=4;g.beginPath();g.moveTo(x0,y0);g.lineTo(x1,y1);g.stroke();g.globalAlpha=1;g.lineWidth=1;g.strokeStyle='#ffffff';g.beginPath();g.moveTo(x0+.5,y0+.5);g.lineTo(x1+.5,y1+.5);g.stroke();}}
-  for(const s of sockets){const [x,y]=sockXY(st,s.grp,s.i);if(s.n)glow(x,y,12,ELEMS[SPELLS[s.n.s].el].c[1]+'aa');}}
-function slotPick(s){const grp=s.grp,i=s.i;
-  if(grp==='atk'){const known=Object.keys(SPELLS).filter(k=>save.known[k]&&SPELLS[k].kind==='atk');
-    if(i===0)pick('主の魔術',known.map(k=>({k,n:SPELLS[k].n,d:SPELLS[k].d,w:SPELLS[k].w,cls:'el-'+SPELLS[k].el})),k=>{save.atk.s=k;fixModes(save.atk);});
-    else{const L=save.atk.links[i-1];const items=known.map(k=>({k,n:SPELLS[k].n,d:linkModes(SPELLS[save.atk.s],SPELLS[k]).map(m=>m.n).join(' ／ '),w:SPELLS[k].w+1,cls:'el-'+SPELLS[k].el}));if(L)items.push({k:'__rm',n:'外す',d:''});
-      pick('結ぶ魔術',items,k=>{if(k==='__rm'){save.atk.links.splice(i-1,1);return;}const m=linkModes(SPELLS[save.atk.s],SPELLS[k])[0].k;if(L){L.n=mkNode(k);L.m=m;}else save.atk.links.push({m,n:mkNode(k)});fixModes(save.atk);});}}
-  else{if(i===0){const known=Object.keys(SPELLS).filter(k=>save.known[k]&&SPELLS[k].kind==='grd');pick('守りの魔術',known.map(k=>({k,n:SPELLS[k].n,d:SPELLS[k].d,w:SPELLS[k].w})),k=>{save.grd=k;fixGrd();});}
-    else if(save.grd){const known=Object.keys(SPELLS).filter(k=>save.known[k]&&SPELLS[k].kind==='atk');const L=save.grdLinks[i-1];const items=known.map(k=>({k,n:SPELLS[k].n,d:'受け止めた瞬間、'+SPELLS[k].n+'を放つ',w:SPELLS[k].w+1,cls:'el-'+SPELLS[k].el}));if(L)items.push({k:'__rm',n:'外す',d:''});
-      pick('守りに結ぶ魔術',items,k=>{if(k==='__rm'){save.grdLinks.splice(i-1,1);return;}if(L){L.n=mkNode(k);}else save.grdLinks.push({m:'counter',n:mkNode(k)});});}}}
+  const vine=(x0,y0,x1,y1)=>{for(let t=0;t<=1;t+=.02){const x=x0+(x1-x0)*t+Math.sin(t*9)*1.5,y=y0+(y1-y0)*t;g.fillStyle=dk;g.fillRect(Math.round(x)-2,Math.round(y)-1,5,3);g.fillStyle=wood;g.fillRect(Math.round(x)-1,Math.round(y),3,1);}};
+  if(st.shape==='fork'){vine(32,34,14,22);vine(32,34,50,22);vine(14,22,10,8);vine(50,22,54,8);vine(32,34,32,12);}
+  else if(st.shape==='ward'){g.fillStyle=dk;g.fillRect(12,6,41,28);g.fillStyle='#3a3a48';g.fillRect(13,7,39,26);g.fillStyle='#5a5a6a';g.fillRect(13,7,39,3);g.fillStyle='#2a2a36';g.fillRect(13,30,39,3);for(const x of [16,48]){g.fillStyle='#8a93a8';g.fillRect(x,10,1,20);}g.fillStyle=dk;g.fillRect(29,33,7,4);}
+  else if(st.shape==='thin'){vine(32,34,32,6);vine(32,30,22,24);vine(32,30,42,24);g.fillStyle='#6fe8c8';g.fillRect(31,4,3,3);}
+  else{g.fillStyle=dk;g.beginPath();g.arc(32,18,14,0,6.28);g.fill();g.fillStyle=wood;g.beginPath();g.arc(32,18,12,0,6.28);g.fill();g.fillStyle=dk;g.beginPath();g.arc(32,18,8,0,6.28);g.fill();g.fillStyle=hi;g.fillRect(24,10,3,2);}
+  // 枠ごとの結び(主の宝石から光の線)
+  st.slots.forEach((cnt,gi)=>{const ss=socks.filter(s=>s.g===gi);if(!ss[0].n)return;const [x0,y0]=sockXY(st,gi,0);for(const s of ss.slice(1)){if(!s.n)continue;const [x1,y1]=sockXY(st,gi,s.i),col=ELEMS[SPELLS[s.n.s].el].c[1];
+    g.strokeStyle=col;g.globalAlpha=.4;g.lineWidth=4;g.beginPath();g.moveTo(x0,y0);g.lineTo(x1,y1);g.stroke();g.globalAlpha=1;g.lineWidth=1;g.strokeStyle='#ffffff';g.beginPath();g.moveTo(x0+.5,y0+.5);g.lineTo(x1+.5,y1+.5);g.stroke();}});
+  // 宝石の台座
+  for(const s of socks){const [x,y]=sockXY(st,s.g,s.i);if(s.n)glow(x,y,14,ELEMS[SPELLS[s.n.s].el].c[1]+'99');g.fillStyle=dk;g.beginPath();g.arc(x,y,9,0,6.28);g.fill();g.fillStyle='#c8a040';g.beginPath();g.arc(x,y,8,0,6.28);g.fill();g.fillStyle='#8a6a20';g.beginPath();g.arc(x,y,6,0,6.28);g.fill();}}
+function slotPick(s){const gi=s.g,i=s.i,root=save.slots[gi],known=Object.keys(SPELLS).filter(k=>save.known[k]);
+  if(i===0){const items=known.map(k=>({k,n:SPELLS[k].n,d:(SPELLS[k].kind==='grd'?'【守り】':'')+SPELLS[k].d,w:SPELLS[k].w,cls:'el-'+SPELLS[k].el}));if(root)items.push({k:'__rm',n:'外す',d:''});
+    pick('枠 '+(gi+1)+' の魔術',items,k=>{if(k==='__rm'){save.slots[gi]=null;return;}if(root){root.s=k;if(isGrd(root))for(const l of root.links)l.m='counter';fixModes(root);}else save.slots[gi]=mkNode(k);});return;}
+  if(!root){toast('先に、主の宝石に魔術をはめよう','#cfd8ec');return;}
+  const L=root.links[i-1],atk=known.filter(k=>SPELLS[k].kind==='atk');const items=atk.map(k=>({k,n:SPELLS[k].n,d:linkModes(SPELLS[root.s],SPELLS[k]).map(m=>m.n).join(' ／ '),w:SPELLS[k].w+1,cls:'el-'+SPELLS[k].el}));if(L)items.push({k:'__rm',n:'外す',d:''});
+  pick(SPELLS[root.s].n+'に結ぶ魔術',items,k=>{if(k==='__rm'){root.links.splice(i-1,1);return;}const m=linkModes(SPELLS[root.s],SPELLS[k])[0].k;if(L){L.n=mkNode(k);L.m=m;}else root.links.push({m,n:mkNode(k)});fixModes(root);});}
 function fixModes(n){for(const l of n.links){const ms=linkModes(SPELLS[n.s],SPELLS[l.n.s]);if(!ms.find(m=>m.k===l.m))l.m=ms[0].k;}}
-function fixGrd(){for(const l of save.grdLinks)l.m='counter';}
 // ---- 魔術の一覧 ----
 function renderBook(B){const known=Object.keys(SPELLS).filter(k=>save.known[k]);
   B.innerHTML=known.map(k=>{const S=SPELLS[k],m=save.mast[k]||0,l=mastLv(m),nx=MAST[l]||null,up=Object.keys(SPELLS).find(u=>SPELLS[u].req&&SPELLS[u].req.from&&SPELLS[u].req.from[0]===k);
@@ -1610,11 +1700,11 @@ function renderLearn(B){const L=Object.keys(SPELLS).filter(k=>!SPELLS[k].enemy&&
   B.querySelectorAll('[data-l]').forEach(b=>b.onclick=()=>{const k=b.dataset.l,s=learnState(k);if(save.gems<s.cost)return;save.gems-=s.cost;save.known[k]=1;toast('「'+SPELLS[k].n+'」を学んだ','#c8a8ff');persist();renderMenu();});}
 // ---- 工房(杖) ----
 function renderStaffs(B){B.innerHTML='<p class="small">杖職人ベルナ「どれでも手に取ってみな」</p>'+Object.keys(STAFFS).map(k=>{const s=STAFFS[k],own=save.staffs.includes(k),r=s.req||{},ok=!r.rank||rankIx(save.rank)>=rankIx(r.rank);
-    return `<div class="card"><div class="ct"><span class="dot" style="background:${s.head}"></span><b>${ok||own?s.n:'？？？'}</b><em>攻め${s.atk}・守り${s.grd}</em></div><p class="small">${ok||own?s.d:'ランク'+r.rank+'になったら見せてやるよ'}</p>
+    return `<div class="card"><div class="ct"><span class="dot" style="background:${s.head}"></span><b>${ok||own?s.n:'？？？'}</b><em>枠 ${s.slots.length}・結び ${s.slots.map(c=>c-1).join('/')}</em></div><p class="small">${ok||own?s.d:'ランク'+r.rank+'になったら見せてやるよ'}</p>
       ${own?(save.staff===k?'<p class="small ok">手にしている</p>':`<button class="pf buy" data-eq="${k}">持ち替える</button>`):ok&&r.cost?`<button class="pf buy" data-buy="${k}" ${save.gems<r.cost?'disabled':''}>魔晶 ${r.cost} で買う</button>`:ok&&r.reward?'<p class="small dim">課題の礼で手に入る</p>':''}</div>`;}).join('');
   B.querySelectorAll('[data-eq]').forEach(b=>b.onclick=()=>{equipStaff(b.dataset.eq);renderMenu();});
   B.querySelectorAll('[data-buy]').forEach(b=>b.onclick=()=>{const k=b.dataset.buy;if(save.gems<STAFFS[k].req.cost)return;save.gems-=STAFFS[k].req.cost;save.staffs.push(k);equipStaff(k);toast('「'+STAFFS[k].n+'」を買った','#ffd27a');renderMenu();});}
-function equipStaff(k){save.staff=k;const st=STAFFS[k];while(countOf(save.atk)>st.atk&&save.atk.links.length)save.atk.links.pop();while(save.grdLinks.length>st.grd-1)save.grdLinks.pop();persist();}
+function equipStaff(k){save.staff=k;const st=STAFFS[k];for(let gi=0;gi<st.slots.length;gi++){const n=save.slots[gi];if(n)while(n.links.length>st.slots[gi]-1)n.links.pop();}persist();hudSlots();}
 // ---- 星図 ----
 let treeSel=0;
 function treeAvail(id){return !save.tree.includes(id)&&TREE[id].adj.some(a=>save.tree.includes(a));}
@@ -1640,11 +1730,11 @@ function title(){state='title';$('title').classList.remove('hide');$('t-ver').te
 let last=performance.now();
 function frame(now){const dt=Math.min(.033,(now-last)/1000);last=now;if(state==='play')step(dt);render();requestAnimationFrame(frame);}
 title();requestAnimationFrame(frame);
-window.__g={P,get mons(){return mons;},get save(){return save;},loadArea,get state(){return state;},talk,openMenu,closeMenu,gainExp,get ents(){return ents;},questProg,hurt,guard,dialog,setGod:v=>{window.__god=v;}};
+window.__g={P,get mons(){return mons;},get save(){return save;},loadArea,get state(){return state;},talk,openMenu,closeMenu,gainExp,get ents(){return ents;},questProg,hurt,useSlot,dialog,setGod:v=>{window.__god=v;}};
 
 </script>
 <script>if('serviceWorker' in navigator&&location.protocol==='https:'&&window.top===window){addEventListener('load',()=>navigator.serviceWorker.register('sw.js').then(r=>{r.update();}).catch(()=>{}));
-navigator.serviceWorker&&navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!window.__reloaded){window.__reloaded=1;}});}</script><script>window.BUILD_V='202611252140';
+navigator.serviceWorker&&navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!window.__reloaded){window.__reloaded=1;}});}</script><script>window.BUILD_V='202611252215';
 // 新しい版を探す:開いたとき・前に戻ってきたとき。タイトルか宿営地にいれば、そのまま読み込み直す
 let __pendingUpd=false;function __chkUpd(){if(location.protocol!=='https:')return;fetch('version.json?'+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{if(j&&j.v&&j.v!==window.BUILD_V){let done='';try{done=localStorage.getItem('js_upd')||'';}catch(e){}if(done!==j.v){__pendingUpd=j.v;__tryUpd();}}}).catch(()=>{});}
 function __tryUpd(){if(!__pendingUpd)return;try{if(typeof state!=='undefined'&&(state==='title'||state==='menu')){try{localStorage.setItem('js_upd',__pendingUpd);}catch(e){}__pendingUpd=false;location.reload();}}catch(e){}}
