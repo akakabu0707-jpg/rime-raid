@@ -1,3 +1,6 @@
-# Rime Raid
+# 術綴りの学徒(仮)
 
-結晶化の病 外伝。スマホのホーム画面に追加して遊ぶウェブアプリ。
+魔術学院の生徒になって、魔術を結び合わせて強くなるゲーム。
+
+- 本体: https://akakabu0707-jpg.github.io/rime-raid/
+- 前作 Rime Raid: https://akakabu0707-jpg.github.io/rime-raid/raid/
