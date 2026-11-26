@@ -1,5 +1,5 @@
-// 版 202611260109:ページはまず通信で最新を取り、つながらないときだけ保存しておいた物を使う
-const C='jutsu-202611260109';
+// 版 202611261007:ページはまず通信で最新を取り、つながらないときだけ保存しておいた物を使う
+const C='jutsu-202611261007';
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(C).then(c=>c.addAll(['./','index.html','manifest.json','icon-192.png','icon-512.png','icon-180.png'])));});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
 self.addEventListener('fetch',e=>{const r=e.request;if(r.method!=='GET')return;
